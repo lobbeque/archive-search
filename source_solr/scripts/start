@@ -1,0 +1,117 @@
+#! /bin/sh
+
+#
+# Start and warm up script for Solr
+#
+
+. ~/.conf_solr
+
+. "`dirname $0`/set_conf_java.sh"
+
+START_UP_TIMEOUT=100
+
+is_up()
+{
+    local PID_FILE="${SOLR_ROOT}/bin//solr-${SOLR_PORT}.pid"
+    local PID=$(cat "${PID_FILE}" 2>/dev/null) || return 1
+    kill -0 "$PID" 2>/dev/null
+}
+
+is_ready()
+{
+    nc localhost ${SOLR_PORT} -w 1 -z >/dev/null 2>&1
+}
+
+warming_collections()
+{
+    echo "Warming i/o cache... "
+    for COLLECTION in ${COLLECTION_UP}; do
+        cat ${SOLR_CORES}/${COLLECTION}/data/index/* >/dev/null 2>&1 && echo "${COLLECTION} warmed"   
+    done
+    echo "All collections warmed !"
+}
+
+finding_collections()
+{
+    local UP=false
+
+    echo "Finding collections ..."
+    
+    COLLECTION_DIR=`find -name 'core.properties' -not -path '*example*' -printf '%h\n' | sort -u`
+
+    for collection in ${COLLECTION_DIR}; do
+
+        if [ -d $collection ]; then
+            
+            name=`echo "$collection" | sed -e "s/\/$//;s/.*\///"`  
+
+            echo "Looking for ${name} ..."   
+
+            wget -O /dev/null "http://localhost:${SOLR_PORT}/solr/${name}/select/?q=*:*" >/dev/null 2>&1 && UP=true && echo "Collection ${name} is up !" && COLLECTION_UP="${COLLECTION_UP} ${name}"
+
+        fi
+
+    done
+
+    if [ "${UP}" = "true" ]; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+start()
+{
+    # Is solr allready up ?
+
+    if is_up; then
+        echo "Solr is allready up !!!" >&2
+        return 1
+    fi
+
+    # Start solr with given java options
+
+    ${SOLR_ROOT}/bin/solr start -p ${SOLR_PORT} ${START_OPTIONS}
+    
+    echo "Waiting for Solr ..."
+
+    # waiting 100 seconds
+    
+    for i in `seq 1 ${START_UP_TIMEOUT}`; do
+
+        sleep 1        
+
+        if is_ready; then
+
+            echo "Solr is ready !"
+            
+            COLLECTION_UP=""
+
+            # Find and warm ( io cache ) each collections
+            
+            if finding_collections; then
+
+                echo "Let's warm !"
+
+                warming_collections
+            
+            else
+                echo "Error while finding or warming collections" >&2
+                return 1
+            fi
+            
+            return 0
+
+        fi
+
+    done    
+
+    echo "Solr still not responding... Must shut down Solr !" >&2
+    
+    ${SOLR_ROOT}/bin/solr stop -all
+    
+    return 1
+}
+
+start
+

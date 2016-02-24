@@ -1,0 +1,7 @@
+#! /bin/sh
+
+. ~/.conf_solr
+
+${SOLR_ROOT}/stop
+
+${SOLR_ROOT}/start

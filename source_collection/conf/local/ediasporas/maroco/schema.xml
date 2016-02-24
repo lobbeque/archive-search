@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<schema name="ediasporas" version="1">
+
+  <types>
+
+    <fieldType name="string"     class="solr.StrField"      sortMissingLast="true" omitNorms="true"/>
+  
+    <fieldType name="date"       class="solr.TrieDateField" precisionStep="0" omitNorms="true" positionIncrementGap="0"/>
+
+    <fieldType name="long"       class="solr.TrieLongField" precisionStep="0" omitNorms="true" positionIncrementGap="0"/>    
+
+  </types>
+
+
+  <fields>
+    <field name="_version_"             type="long"        indexed="true"  stored="true"  multiValued="false"/>
+    <field name="ID"                    type="string"  indexed="true"  stored="true"  multiValued="false" required="true" />
+    <field name="SITE"                  type="string"      indexed="true"  stored="true"  multiValued="false" default="toto" />
+    <field name="URL"                   type="string"      indexed="true"  stored="true"  multiValued="false" />
+    <!-- <field name="TEXT"                  type="text"    indexed="true"  stored="false" multiValued="true" /> -->
+   </fields>
+
+  <uniqueKey>ID</uniqueKey>
+
+  <!-- <copyField source="manu" dest="manu_exact"/> -->
+
+  <similarity class="solr.DefaultSimilarityFactory"/>
+
+</schema>

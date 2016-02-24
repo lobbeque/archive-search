@@ -1,0 +1,111 @@
+#!/bin/sh
+
+#
+# Install and init solr 
+#
+
+exitWithError()
+{
+    echo "$1" 1>&2
+    exit 1
+}
+
+
+exitWithUsage()
+{
+    echo "$1" 1>&2
+    usage
+    exit 1
+}
+
+
+usage()
+{
+    cat << EOF
+
+USAGE: `basename $0` options
+
+OPTIONS: 
+   --corpus  (optional - default: mar)   maroco/palestine1/palestine2/france/...
+   --type    (optional - default: ediasporas) [ediasporas]
+   --mode    (optional - default: local) [local|cloud]
+   --help    (optional) displays this message
+
+EOF
+}
+
+
+init()
+{
+    CORPUS=maroco
+    TYPE=ediasporas
+    MODE=local
+
+    while getopts ":-:" OPTION
+    do
+        LONG_OPTION="${OPTARG%%=*}"
+        OPTARG="${OPTARG#*=}"
+
+        case ${LONG_OPTION} in
+            corpus)
+                CORPUS=${OPTARG}
+                ;;
+
+            type)
+                TYPE=${OPTARG}
+                ;;
+
+            mode)
+                MODE=${OPTARG}
+                ;;                                
+
+            help) 
+                usage ; 
+                exit 0
+                ;;
+
+            *) 
+                echo "Unknown option ${LONG_OPTION}" ; 
+                usage ; 
+                exit 1 
+                ;;
+        esac
+    done
+
+    if [ "${TYPE}" != "ediasporas" ]; then
+        exitWithUsage "unknown value ${TYPE} for option type."
+    fi
+
+    if [ "${MODE}" != "local" ] && [ "${MODE}" != "cloud" ]; then
+        exitWithUsage "unknwon value ${MODE} for option mode."
+    fi   
+
+    if [ "${MODE}" = "local" ]; then
+        . conf/.conf_solr
+    else
+        echo "to be continued ..."
+    fi     
+}
+
+
+install()
+{
+    echo "Installing Solr for ${TYPE} ${CORPUS} archives"
+    
+    echo "=== DEPLOYING .conf_solr ==="
+    ./deploy_conf_solr --mode=${MODE}
+
+    echo "=== CLEANING SOLR ==="
+    ./clean_solr --mode=${MODE}
+
+    echo "=== DEPLOYING SOLR ==="
+    ./deploy_solr --mode=${MODE}
+
+    echo "=== INSTALLING COLLECTION ==="
+    ./deploy_collection --mode=${MODE} --corpus=${CORPUS} --type=${TYPE}
+}
+
+
+init "$@"
+
+install

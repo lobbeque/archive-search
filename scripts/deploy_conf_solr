@@ -1,0 +1,89 @@
+#!/bin/sh
+
+# 
+# Deploy .conf_solr 
+#
+
+exitWithUsage()
+{
+    echo "$1" 1>&2
+    usage
+    exit 1
+}
+
+
+usage()
+{
+    cat << EOF
+
+USAGE: `basename $0` options
+
+OPTIONS:
+   --mode (optional - default:local ) [local|cloud]
+   --help (optional)
+
+EOF
+}
+
+
+init()
+{
+    MODE=local
+
+    while getopts ":-:" OPTION
+    do
+        LONG_OPTION="${OPTARG%%=*}"
+        OPTARG="${OPTARG#*=}"
+
+        case $LONG_OPTION in
+            mode) 
+                MODE=${OPTARG}
+                ;;
+
+            help) 
+                usage ; 
+                exit 0
+                ;;
+
+            *) 
+                echo "Unknown option ${LONG_OPTION}" ; 
+                usage ; 
+                exit 1 
+                ;;
+        esac
+    done
+
+    if [ "${MODE}" != "local" ] && [ "${MODE}" != "cloud" ]; then
+        exitWithUsage "unknwon value ${MODE} for option mode."
+    fi
+
+    if [ "${MODE}" = "local" ]; then
+        . conf/.conf_solr
+    else
+        echo "to be continued ..."
+    fi    
+}
+
+
+push()
+{
+
+    echo "Deploying .conf_solr ..."
+
+    if [ "${MODE}" = "local" ]; then
+        if [ -e "/home/${USER}/.conf_solr" ]; then 
+            cp -n /home/${USER}/.conf_solr /home/${USER}/.conf_solr_bck; 
+            rm -f /home/${USER}/.conf_solr;
+        fi
+        cp conf/.conf_solr /home/${USER};
+    else
+
+        echo "to be continued ..." 
+
+    fi
+}
+
+
+init "$@"
+
+push

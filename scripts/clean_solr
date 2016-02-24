@@ -1,0 +1,88 @@
+#!/bin/sh
+
+# 
+# Clean solr repository 
+#
+
+exitWithUsage()
+{
+    echo "$1" 1>&2
+    usage
+    exit 1
+}
+
+
+usage()
+{
+    cat << EOF
+
+USAGE: `basename $0` options
+
+OPTIONS:
+   --mode (optional - default:local ) [local|cloud]
+   --help (optional)
+
+EOF
+}
+
+
+init()
+{
+    MODE=local
+
+    while getopts ":-:" OPTION
+    do
+        LONG_OPTION="${OPTARG%%=*}"
+        OPTARG="${OPTARG#*=}"
+
+        case $LONG_OPTION in
+            mode) 
+                MODE=${OPTARG}
+                ;;
+
+            help) 
+                usage ; 
+                exit 0
+                ;;
+
+            *) 
+                echo "Unknown option ${LONG_OPTION}" ; 
+                usage ; 
+                exit 1 
+                ;;
+        esac
+    done
+
+    if [ "${MODE}" != "local" ] && [ "${MODE}" != "cloud" ]; then
+        exitWithUsage "unknwon value ${MODE} for option mode."
+    fi
+
+    if [ "${MODE}" = "local" ]; then
+        . conf/.conf_solr
+    else
+        echo "to be continued ..."
+    fi    
+}
+
+
+clean()
+{
+
+    echo "Clean Solr-${SOLR_VERSION} repository ..."
+
+    if [ ! -e ${SEARCH_ROOT} ]; then
+        mkdir -p ${SEARCH_ROOT}
+    fi    
+
+    if [ "${MODE}" = "local" ]; then
+        ${SOLR_ROOT}/stop
+        cd ${SEARCH_ROOT} && rm -rf solr-${SOLR_VERSION};
+    else
+        echo "to be continued ..." 
+    fi
+}
+
+
+init "$@"
+
+clean

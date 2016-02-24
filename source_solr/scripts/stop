@@ -1,0 +1,5 @@
+#! /bin/sh
+
+. ~/.conf_solr
+
+${SOLR_ROOT}/bin/solr stop -all

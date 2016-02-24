@@ -1,0 +1,141 @@
+#!/bin/sh
+
+#
+# Deploy Collection 
+#
+
+exitWithError ()
+{
+    echo "$1" 1>&2
+    exit 1
+}
+
+
+exitWithUsage ()
+{
+    echo "$1" 1>&2
+    usage
+    exit 1
+}
+
+
+usage ()
+{
+    cat << EOF
+
+USAGE: `basename $0` options
+
+OPTIONS:
+   --mode         (required) [local|cloud]
+   --corpus       (optional - default: maroco)   maroco/palestine1/palestine2/france/...
+   --type         (optional - default: ediasporas) [ediasporas]   
+   --help         (optional) displays this message
+
+EOF
+}
+
+
+init ()
+{
+    MODE=local
+
+    while getopts ":-:" OPTION
+    do
+        LONG_OPTION="${OPTARG%%=*}"
+        OPTARG="${OPTARG#*=}"
+
+        case $LONG_OPTION in
+            mode)
+                MODE=${OPTARG}
+                ;;
+
+            corpus)
+                CORPUS=${OPTARG}
+                ;;
+
+            type)
+                TYPE=${OPTARG}
+                ;;                
+
+            help) 
+                usage ; 
+                exit 0
+                ;;
+
+            *) 
+                echo "Unknown option ${LONG_OPTION}" ; 
+                usage ; 
+                exit 1 
+                ;;
+        esac
+    done
+
+    if [ "${MODE}" = "" ]; then
+        exitWithUsage "a required option is missing."
+    fi
+
+    if  [ "${MODE}" != "local" ] && [ "${MODE}" != "cloud" ]; then
+        exitWithUsage "unknown value ${MODE} for option mode."
+    fi
+
+    if [ "${MODE}" = "local" ]; then
+        . conf/.conf_solr
+        CONF_JAVA_FILE="set_conf_java.sh"
+    else
+        echo "to be continued ..."
+    fi
+}
+
+make_directory_local ()
+{
+    if [ ! -f ${SOLR_CORES}/solr.xml ]; then
+        cp ../source_collection/conf/${MODE}/solr.xml ${SOLR_CORES}/
+    fi
+
+    if [ ! -f ${SOLR_CORES}/zoo.cfg ]; then
+        cp ../source_collection/conf/${MODE}/zoo.cfg ${SOLR_CORES}/
+    fi  
+
+    if [ ! -f ${SOLR_CORES}/logback.xml ]; then
+        cp ../source_collection/conf/${MODE}/$2/logback.xml ${SOLR_CORES}/
+    fi     
+
+    mkdir -p ${SOLR_CORES}/$1
+    mkdir -p ${SOLR_CORES}/$1/conf
+    mkdir -p ${SOLR_CORES}/$1/data
+    mkdir -p ${SOLR_CORES}/$1/data/index  
+
+    cp ../source_collection/conf/${MODE}/core.properties ${SOLR_CORES}/$1/
+    cp ../source_collection/conf/${MODE}/$2/$3/schema.xml ${SOLR_CORES}/$1/conf/
+    cp ../source_collection/conf/${MODE}/$2/$3/solrconfig.xml ${SOLR_CORES}/$1/conf/
+}
+
+config_core ()
+{
+    # When local mode we speek about core instead of collection
+    
+    CORE_CONF=
+
+    CORE_CONF="${CORE_CONF}name=$1"
+
+    cat ${SOLR_CORES}/$1/core.properties | sed "s#__CORES__#${CORE_CONF}#g" > ${SOLR_CORES}/$1/core.properties_tmp
+    mv ${SOLR_CORES}/$1/core.properties_tmp ${SOLR_CORES}/$1/core.properties
+}
+
+install ()
+{
+    echo "${MODE} installation of collection ${TYPE}_${CORPUS} ..."
+
+    COLLECTION_NAME="${TYPE}_${CORPUS}" 
+
+    if [ "${MODE}" = "local" ]; then
+        make_directory_local ${COLLECTION_NAME} ${TYPE} ${CORPUS}
+        config_core ${COLLECTION_NAME}
+    else
+        echo "to be continued ..."
+    fi
+}
+
+init "$@"
+
+install
