@@ -60,7 +60,7 @@ init()
     if [ "${MODE}" = "local" ]; then
         . conf/.conf_solr
     else
-        echo "to be continued ..."
+        . conf/.conf_solr_cloud
     fi    
 }
 
@@ -70,16 +70,16 @@ push()
 
     echo "Deploying .conf_solr ..."
 
+    if [ -e "/home/${USER}/.conf_solr" ]; then 
+        cp -n /home/${USER}/.conf_solr /home/${USER}/.conf_solr_bck; 
+        rm -f /home/${USER}/.conf_solr;
+    fi
+
     if [ "${MODE}" = "local" ]; then
-        if [ -e "/home/${USER}/.conf_solr" ]; then 
-            cp -n /home/${USER}/.conf_solr /home/${USER}/.conf_solr_bck; 
-            rm -f /home/${USER}/.conf_solr;
-        fi
         cp conf/.conf_solr /home/${USER};
     else
-
-        echo "to be continued ..." 
-
+        cp conf/.conf_solr_cloud /home/${USER};
+        ln -s /home/${USER}/.conf_solr_cloud /home/${USER}/.conf_solr 
     fi
 }
 

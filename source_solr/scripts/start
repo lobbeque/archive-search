@@ -69,6 +69,10 @@ start()
         return 1
     fi
 
+    # Start zookeeper if possible
+
+    ${ZOOKEEPER_ROOT}/bin/zkServer.sh start
+
     # Start solr with given java options
 
     ${SOLR_ROOT}/bin/solr start -p ${SOLR_PORT} ${START_OPTIONS}

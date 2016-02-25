@@ -3,3 +3,5 @@
 . ~/.conf_solr
 
 ${SOLR_ROOT}/bin/solr stop -all
+
+${ZOOKEEPER_ROOT}/bin/zkServer.sh stop

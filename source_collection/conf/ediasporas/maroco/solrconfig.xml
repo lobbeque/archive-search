@@ -4,7 +4,7 @@
 
   <luceneMatchVersion>${solr.version}</luceneMatchVersion>
 
-  <lib dir="../../../dist/" regex="solr-dataimporthandler-.*\.jar" />
+  <lib dir="${solr.root}/dist/" regex="solr-dataimporthandler-.*\.jar" />
 
   <!-- ./data -->
 

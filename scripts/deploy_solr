@@ -68,11 +68,13 @@ init ()
         exitWithUsage "unknown value ${MODE} for option mode."
     fi
 
+    CONF_JAVA_FILE="set_conf_java.sh"
+
+
     if [ "${MODE}" = "local" ]; then
         . conf/.conf_solr
-        CONF_JAVA_FILE="set_conf_java.sh"
     else
-        echo "to be continued ..."
+        . conf/.conf_solr_cloud
     fi
 }
 

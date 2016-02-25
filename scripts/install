@@ -26,11 +26,13 @@ usage()
 USAGE: `basename $0` options
 
 OPTIONS: 
-   --corpus  (optional - default: mar)   maroco/palestine1/palestine2/france/...
-   --type    (optional - default: ediasporas) [ediasporas]
-   --mode    (optional - default: local) [local|cloud]
-   --help    (optional) displays this message
-
+   --corpus     (optional - default: mar)   maroco/palestine1/palestine2/france/...
+   --type       (optional - default: ediasporas) [ediasporas]
+   --mode       (required) [local|cloud]
+   --nb_shards  (optional - default: 2)
+   --nb_replica (optional - default: 2)   
+   --help       (optional) displays this message
+ 
 EOF
 }
 
@@ -39,7 +41,9 @@ init()
 {
     CORPUS=maroco
     TYPE=ediasporas
-    MODE=local
+    MODE=
+    NB_SHARDS=2
+    NB_REPLICA=2    
 
     while getopts ":-:" OPTION
     do
@@ -57,7 +61,15 @@ init()
 
             mode)
                 MODE=${OPTARG}
-                ;;                                
+                ;;  
+
+            nb_shards)
+                NB_SHARDS=${OPTARG}
+                ;; 
+
+            nb_replica)
+                NB_REPLICA=${OPTARG}
+                ;;                                                
 
             help) 
                 usage ; 
@@ -83,7 +95,7 @@ init()
     if [ "${MODE}" = "local" ]; then
         . conf/.conf_solr
     else
-        echo "to be continued ..."
+        . conf/.conf_solr_cloud
     fi     
 }
 
@@ -101,8 +113,15 @@ install()
     echo "=== DEPLOYING SOLR ==="
     ./deploy_solr --mode=${MODE}
 
+    if [ "${MODE}" = "cloud" ]; then
+        echo "=== DEPLOYING ZOOKEEPER ==="
+        ./deploy_zookeeper
+    fi
+
     echo "=== INSTALLING COLLECTION ==="
-    ./deploy_collection --mode=${MODE} --corpus=${CORPUS} --type=${TYPE}
+    ./deploy_collection --mode=${MODE} --corpus=${CORPUS} --type=${TYPE} --nb_shards=${NB_SHARDS} --nb_replica=${NB_REPLICA}
+
+    echo "=== END ==="    
 }
 
 

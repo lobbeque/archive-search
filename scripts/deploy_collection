@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 #
 # Deploy Collection 
@@ -29,6 +29,8 @@ OPTIONS:
    --mode         (required) [local|cloud]
    --corpus       (optional - default: maroco)   maroco/palestine1/palestine2/france/...
    --type         (optional - default: ediasporas) [ediasporas]   
+   --nb_shards    (optional - default: 2)
+   --nb_replica   (optional - default: 2)
    --help         (optional) displays this message
 
 EOF
@@ -38,6 +40,8 @@ EOF
 init ()
 {
     MODE=local
+    NB_SHARDS=2
+    NB_REPLICA=2
 
     while getopts ":-:" OPTION
     do
@@ -55,7 +59,15 @@ init ()
 
             type)
                 TYPE=${OPTARG}
-                ;;                
+                ;; 
+
+            nb_shards)
+                NB_SHARDS=${OPTARG}
+                ;; 
+
+            nb_replica)
+                NB_REPLICA=${OPTARG}
+                ;;                 
 
             help) 
                 usage ; 
@@ -80,24 +92,23 @@ init ()
 
     if [ "${MODE}" = "local" ]; then
         . conf/.conf_solr
-        CONF_JAVA_FILE="set_conf_java.sh"
     else
-        echo "to be continued ..."
+        . conf/.conf_solr_cloud
     fi
 }
 
 make_directory_local ()
 {
     if [ ! -f ${SOLR_CORES}/solr.xml ]; then
-        cp ../source_collection/conf/${MODE}/solr.xml ${SOLR_CORES}/
+        cp ../source_collection/conf/solr.xml ${SOLR_CORES}/
     fi
 
     if [ ! -f ${SOLR_CORES}/zoo.cfg ]; then
-        cp ../source_collection/conf/${MODE}/zoo.cfg ${SOLR_CORES}/
+        cp ../source_collection/conf/zoo.cfg ${SOLR_CORES}/
     fi  
 
     if [ ! -f ${SOLR_CORES}/logback.xml ]; then
-        cp ../source_collection/conf/${MODE}/$2/logback.xml ${SOLR_CORES}/
+        cp ../source_collection/conf/$2/logback.xml ${SOLR_CORES}/
     fi     
 
     mkdir -p ${SOLR_CORES}/$1
@@ -105,9 +116,9 @@ make_directory_local ()
     mkdir -p ${SOLR_CORES}/$1/data
     mkdir -p ${SOLR_CORES}/$1/data/index  
 
-    cp ../source_collection/conf/${MODE}/core.properties ${SOLR_CORES}/$1/
-    cp ../source_collection/conf/${MODE}/$2/$3/schema.xml ${SOLR_CORES}/$1/conf/
-    cp ../source_collection/conf/${MODE}/$2/$3/solrconfig.xml ${SOLR_CORES}/$1/conf/
+    cp ../source_collection/conf/core.properties ${SOLR_CORES}/$1/
+    cp ../source_collection/conf/$2/$3/schema.xml ${SOLR_CORES}/$1/conf/
+    cp ../source_collection/conf/$2/$3/solrconfig.xml ${SOLR_CORES}/$1/conf/
 }
 
 config_core ()
@@ -122,6 +133,72 @@ config_core ()
     mv ${SOLR_CORES}/$1/core.properties_tmp ${SOLR_CORES}/$1/core.properties
 }
 
+config_collection ()
+{
+
+    cp ../source_collection/conf/solr.xml ${SOLR_CORES}/
+
+    ZOO_CONF=
+
+    IFS=' ' read -r -a SERVERS <<< "${ZOOKEEPER_SERVERS_LIST}"
+
+    for SERVER in "${SERVERS[@]}"
+    do
+        IFS=':' read -r -a IP <<< "${SERVER}"
+        ZOO_CONF="${ZOO_CONF}${IP[0]}:${ZOOKEEPER_CLIENT_PORT},"
+    done    
+
+    ZOO_CONF="<str name=\"zkHost\">${ZOO_CONF}</str>"
+
+    cat ${SOLR_CORES}/solr.xml | sed "s#<!-- __ZOO_HOST__ -->#${ZOO_CONF}#g" > ${SOLR_CORES}/solr.xml_tmp
+    mv ${SOLR_CORES}/solr.xml_tmp ${SOLR_CORES}/solr.xml
+}
+
+make_collection ()
+{
+
+    mkdir -p ${SOLR_CORES}/$1
+    mkdir -p ${SOLR_CORES}/$1/conf
+
+    cp ../source_collection/conf/$2/$3/schema.xml ${SOLR_CORES}/$1/conf/
+    cp ../source_collection/conf/$2/$3/solrconfig.xml ${SOLR_CORES}/$1/conf/    
+
+    # Start Zookeeper
+
+    if ! ${ZOOKEEPER_ROOT}/bin/zkServer.sh start; then
+        printf '%s\n' 'Zookeeper could not start !' >&2
+        exit 1
+    fi
+
+    # Start Solr
+
+    if ! ${SOLR_ROOT}/bin/solr start -p ${SOLR_PORT} -Dsolr.version=${SOLR_VERSION} -Dsolr.root=${SOLR_ROOT}; then
+        printf '%s\n' 'Solr could not start !' >&2
+        exit 1
+    fi
+
+    # Make collection
+
+    if ! ${SOLR_ROOT}/bin/solr create_collection -c $1 -d ${SOLR_CORES}/$1/conf -n $1 -shards ${NB_SHARDS} -replicationFactor ${NB_REPLICA}; then
+        printf '%s\n' 'Collection could not be created !' >&2
+        exit 1
+    fi  
+
+    # Stop Solr
+
+    if ! ${SOLR_ROOT}/bin/solr stop; then
+        printf '%s\n' 'Solr could not Stop !' >&2
+        exit 1
+    fi      
+
+    # Stop Zookeeper
+
+    if ! ${ZOOKEEPER_ROOT}/bin/zkServer.sh stop; then
+        printf '%s\n' 'Zookeeper could not stop !' >&2
+        exit 1
+    fi
+}
+
 install ()
 {
     echo "${MODE} installation of collection ${TYPE}_${CORPUS} ..."
@@ -132,7 +209,8 @@ install ()
         make_directory_local ${COLLECTION_NAME} ${TYPE} ${CORPUS}
         config_core ${COLLECTION_NAME}
     else
-        echo "to be continued ..."
+        config_collection
+        make_collection ${COLLECTION_NAME} ${TYPE} ${CORPUS}
     fi
 }
 

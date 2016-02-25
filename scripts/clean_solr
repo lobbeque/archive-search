@@ -60,7 +60,7 @@ init()
     if [ "${MODE}" = "local" ]; then
         . conf/.conf_solr
     else
-        echo "to be continued ..."
+        . conf/.conf_solr_cloud
     fi    
 }
 
@@ -68,18 +68,18 @@ init()
 clean()
 {
 
-    echo "Clean Solr-${SOLR_VERSION} repository ..."
+    echo "Clean Solr-${SOLR_VERSION} & Zookeeper-${ZOOKEEPER_VERSION} repositories ..."
 
     if [ ! -e ${SEARCH_ROOT} ]; then
         mkdir -p ${SEARCH_ROOT}
-    fi    
+    fi  
 
-    if [ "${MODE}" = "local" ]; then
-        ${SOLR_ROOT}/stop
-        cd ${SEARCH_ROOT} && rm -rf solr-${SOLR_VERSION};
-    else
-        echo "to be continued ..." 
-    fi
+    ${SOLR_ROOT}/stop
+
+    ${ZOOKEEPER_ROOT}/bin/zkServer.sh stop
+
+    cd ${SEARCH_ROOT} && rm -rf solr-${SOLR_VERSION} && rm -rf zookeeper-${ZOOKEEPER_VERSION};      
+
 }
 
 

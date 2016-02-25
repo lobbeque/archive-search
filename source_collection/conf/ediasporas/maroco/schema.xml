@@ -14,8 +14,9 @@
 
 
   <fields>
+    <field name="_indexed_at_tdt"       type="date"        indexed="false"  stored="false"  multiValued="false" default="NOW" />
     <field name="_version_"             type="long"        indexed="true"  stored="true"  multiValued="false"/>
-    <field name="ID"                    type="string"  indexed="true"  stored="true"  multiValued="false" required="true" />
+    <field name="ID"                    type="string"      indexed="true"  stored="true"  multiValued="false" required="true" />
     <field name="SITE"                  type="string"      indexed="true"  stored="true"  multiValued="false" default="toto" />
     <field name="URL"                   type="string"      indexed="true"  stored="true"  multiValued="false" />
     <!-- <field name="TEXT"                  type="text"    indexed="true"  stored="false" multiValued="true" /> -->

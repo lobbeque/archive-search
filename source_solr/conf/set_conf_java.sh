@@ -7,6 +7,7 @@ MEM_KB=$(cat /proc/meminfo | head -n 1 | awk '{ print $2 }')
 JAVA_HEAP=$((3000 + ${MEM_KB} / 3000))
 
 export START_OPTIONS="-m ${JAVA_HEAP}M -Dsolr.conf=${SOLR_ROOT} \
+-Dsolr.root=${SOLR_ROOT} \
 -Dsolr.version=${SOLR_VERSION} \
 -Dsolr.run=${SOLR_RUN} \
 -Djetty.logs=${SOLR_LOGS} \

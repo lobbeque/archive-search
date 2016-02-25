@@ -1,0 +1,102 @@
+#!/bin/bash
+
+#
+# Deploy Zookeeper 
+#
+
+exitWithError ()
+{
+    echo "$1" 1>&2
+    exit 1
+}
+
+
+exitWithUsage ()
+{
+    echo "$1" 1>&2
+    usage
+    exit 1
+}
+
+
+usage ()
+{
+    cat << EOF
+
+USAGE: `basename $0` options
+
+OPTIONS:
+   --help         (optional) displays this message
+
+EOF
+}
+
+
+init ()
+{
+
+    while getopts ":-:" OPTION
+    do
+        LONG_OPTION="${OPTARG%%=*}"
+        OPTARG="${OPTARG#*=}"
+
+        case $LONG_OPTION in
+            help) 
+                usage ; 
+                exit 0
+                ;;
+
+            *) 
+                echo "Unknown option ${LONG_OPTION}" ; 
+                usage ; 
+                exit 1 
+                ;;
+        esac
+    done
+
+    . conf/.conf_solr_cloud
+}
+
+config_zoo ()
+{
+    ZOO_CONF=""
+
+    ZOO_CONF="${ZOO_CONF}dataDir=${ZOOKEEPER_DATA}\nclientPort=${ZOOKEEPER_CLIENT_PORT}"
+
+    IFS=' ' read -r -a SERVERS <<< "${ZOOKEEPER_SERVERS_LIST}"
+
+    SERVER_CPT=1
+
+    for SERVER in "${SERVERS[@]}"
+    do
+        ZOO_CONF="${ZOO_CONF}\nserver.${SERVER_CPT}=${SERVER}"
+        ((SERVER_CPT++))
+    done
+
+    cat ${ZOOKEEPER_ROOT}/conf/zoo.cfg | sed "s#__ZOO_CONF__#${ZOO_CONF}#g" > ${ZOOKEEPER_ROOT}/conf/zoo.cfg_tmp
+    mv ${ZOOKEEPER_ROOT}/conf/zoo.cfg_tmp ${ZOOKEEPER_ROOT}/conf/zoo.cfg
+}
+
+install ()
+{
+    echo "Deploying Zookeeper sources ..."
+
+    if [ ! -e ${ZOOKEEPER_ROOT} ]; then
+        mkdir -p ${ZOOKEEPER_ROOT}
+    fi
+
+    cp -r ../source_zookeeper/zookeeper-${ZOOKEEPER_VERSION}/* ${ZOOKEEPER_ROOT}/
+
+    if [ ! -e ${ZOOKEEPER_DATA} ]; then
+        mkdir -p ${ZOOKEEPER_DATA}
+        echo "${ZOOKEEPER_CURRENT_SERVER}" > ${ZOOKEEPER_DATA}/myid
+    fi  
+
+    cp ../source_zookeeper/conf/zoo.cfg ${ZOOKEEPER_ROOT}/conf/
+
+    config_zoo
+}
+
+init "$@"
+
+install
