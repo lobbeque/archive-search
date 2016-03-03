@@ -109,7 +109,7 @@ make_directory_local ()
 
     if [ ! -f ${SOLR_CORES}/logback.xml ]; then
         cp ../source_collection/conf/$2/logback.xml ${SOLR_CORES}/
-    fi     
+    fi  
 
     mkdir -p ${SOLR_CORES}/$1
     mkdir -p ${SOLR_CORES}/$1/conf

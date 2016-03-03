@@ -100,8 +100,11 @@ install ()
     cp ../source_solr/scripts/start   ${SOLR_ROOT}/
     cp ../source_solr/scripts/stop    ${SOLR_ROOT}/
     cp ../source_solr/scripts/restart ${SOLR_ROOT}/
+    cp ../source_solr/scripts/reload  ${SOLR_ROOT}/    
 
     cp ../source_solr/conf/${CONF_JAVA_FILE} ${SOLR_ROOT}/
+
+    cp -r ../source_solr/lib ${SOLR_CORES}/   
 
     if [ "${CONF_JAVA_FILE}" != "set_conf_java.sh" ]; then
         mv -f ${SOLR_ROOT}/${CONF_JAVA_FILE} ${SOLR_ROOT}/set_conf_java.sh

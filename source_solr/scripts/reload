@@ -1,0 +1,98 @@
+#!/bin/sh
+
+#
+# Reload config & schema to zookeeper
+#
+
+. ~/.conf_solr
+
+exitWithError ()
+{
+    echo "$1" 1>&2
+    exit 1
+}
+
+
+exitWithUsage ()
+{
+    echo "$1" 1>&2
+    usage
+    exit 1
+}
+
+
+usage ()
+{
+    cat << EOF
+
+USAGE: `basename $0` options
+
+OPTIONS:
+   --mode         (required) [local|cloud]
+   --collection   (required)   
+   --help         (optional) displays this message
+
+EOF
+}
+
+
+init ()
+{
+    MODE=cloud
+    COLLECTION=
+
+    while getopts ":-:" OPTION
+    do
+        LONG_OPTION="${OPTARG%%=*}"
+        OPTARG="${OPTARG#*=}"
+
+        case $LONG_OPTION in
+            mode)
+                MODE=${OPTARG}
+                ;;
+
+            collection)
+                COLLECTION=${OPTARG}
+                ;;                
+
+            help) 
+                usage ; 
+                exit 0
+                ;;
+
+            *) 
+                echo "Unknown option ${LONG_OPTION}" ; 
+                usage ; 
+                exit 1 
+                ;;
+        esac
+    done
+
+    if [ "${MODE}" = "" ] || [ "${COLLECTION}" = "" ]; then
+        exitWithUsage "a required option is missing."
+    fi
+
+    if  [ "${MODE}" != "local" ] && [ "${MODE}" != "cloud" ]; then
+        exitWithUsage "unknown value ${MODE} for option mode."
+    fi
+}
+
+reload ()
+{
+    echo "Reload conf & schema for ${COLLECTION} ..."
+
+    ${ZOOKEEPER_ROOT}/bin/zkCli.sh -cmd upconfig -zkhost  127.0.0.1:${ZOOKEEPER_CLIENT_PORT}  -collection ${COLLECTION}  -confname "solrconfig.xml" -solrhome ${SOLR_ROOT} -confdir ${SOLR_SERVER}/solr/${COLLECTION}/conf
+
+    ${ZOOKEEPER_ROOT}/bin/zkCli.sh -cmd upconfig -zkhost  127.0.0.1:${ZOOKEEPER_CLIENT_PORT}  -collection ${COLLECTION}  -confname "schema.xml" -solrhome ${SOLR_ROOT} -confdir ${SOLR_SERVER}/solr/${COLLECTION}/conf  
+    
+    ./restart  
+
+
+}
+
+init "$@"
+
+reload
+
+
+

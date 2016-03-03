@@ -8,21 +8,48 @@
   
     <fieldType name="date"       class="solr.TrieDateField" precisionStep="0" omitNorms="true" positionIncrementGap="0"/>
 
-    <fieldType name="long"       class="solr.TrieLongField" precisionStep="0" omitNorms="true" positionIncrementGap="0"/>    
+    <fieldType name="int"        class="solr.TrieIntField" precisionStep="0" omitNorms="true" positionIncrementGap="0"/>
+   
+    <fieldType name="float"      class="solr.TrieFloatField" precisionStep="0" omitNorms="true" positionIncrementGap="0"/>
+   
+    <fieldType name="long"       class="solr.TrieLongField" precisionStep="0" omitNorms="true" positionIncrementGap="0"/>
+   
+    <fieldType name="double"     class="solr.TrieDoubleField" precisionStep="0" omitNorms="true" positionIncrementGap="0"/> 
+
+    <fieldType name="boolean"    class="solr.BoolField" sortMissingLast="true" omitNorms="true"/>    
 
   </types>
 
 
   <fields>
-    <field name="_indexed_at_tdt"       type="date"        indexed="false"  stored="false"  multiValued="false" default="NOW" />
-    <field name="_version_"             type="long"        indexed="true"  stored="true"  multiValued="false"/>
-    <field name="ID"                    type="string"      indexed="true"  stored="true"  multiValued="false" required="true" />
-    <field name="SITE"                  type="string"      indexed="true"  stored="true"  multiValued="false" default="toto" />
-    <field name="URL"                   type="string"      indexed="true"  stored="true"  multiValued="false" />
+
+    <field name="_indexed_at_tdt"       type="date"          indexed="false" stored="false"  multiValued="false" default="NOW" />
+    <field name="_version_"             type="long"          indexed="true"  stored="true"  multiValued="false"/>
+    <field name="id"                    type="string"        indexed="true"  stored="true"  multiValued="false" required="true" />
+    <field name="active"                type="boolean"       indexed="true"  stored="true"  multiValued="false"/>
+    
+    <field name="client_country"        type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
+    <field name="client_ip"             type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
+    <field name="client_lang"           type="string"        indexed="true"  stored="true"  docValues="true" multiValued="true"/>
+    <field name="corpus"                type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
+    
+    <field name="crawl_session"         type="string"        indexed="true"  stored="true"  docValues="true" multiValued="true"/>
+    <field name="date"                  type="date"          indexed="true"  stored="true"  docValues="true" multiValued="true"/>
+    <field name="ip"                    type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>    
+    <field name="length"                type="double"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
+
+    <field name="level"                 type="int"           indexed="true"  stored="true"  docValues="true" multiValued="false"/>
+    <field name="page"                  type="int"           indexed="true"  stored="true"  docValues="true" multiValued="false"/>            
+    <field name="referer_url"           type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
+    <field name="site"                  type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
+    
+    <field name="type"                  type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
+    <field name="url"                   type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false" />
     <!-- <field name="TEXT"                  type="text"    indexed="true"  stored="false" multiValued="true" /> -->
+
    </fields>
 
-  <uniqueKey>ID</uniqueKey>
+  <uniqueKey>id</uniqueKey>
 
   <!-- <copyField source="manu" dest="manu_exact"/> -->
 

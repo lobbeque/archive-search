@@ -5,6 +5,7 @@
   <luceneMatchVersion>${solr.version}</luceneMatchVersion>
 
   <lib dir="${solr.root}/dist/" regex="solr-dataimporthandler-.*\.jar" />
+  <lib dir="${solr.root}/server/solr/lib/" regex="archive-search-tools_2.10-1.0.0.jar" />
 
   <!-- ./data -->
 
@@ -136,20 +137,25 @@
     </httpCaching>
   </requestDispatcher>
 
+  <searchComponent name="timePicker" class="qlobbe.TimePickerComponent"/>  
+
   <!-- default requestHandler -->
 
   <requestHandler name="/standard" class="solr.StandardRequestHandler" default="true">
     <lst name="defaults">
       <str name="q.alt">*:*</str>
-      <str name="df">URL</str>
-      <str name="qf">URL</str>
-      <str name="pf">URL</str>
+      <str name="df">url</str>
+      <str name="qf">url</str>
+      <str name="pf">url</str>
       <str name="q.op">AND</str>
       <str name="lowercaseOperators">false</str>
       <float name="tie">1</float>
       <str name="wt">json</str>
       <str name="json.nl">map</str>
     </lst>
+    <arr name="last-components"> 
+      <str>timePicker</str>
+    </arr>    
   </requestHandler>
 
   <requestHandler name="/update" class="solr.UpdateRequestHandler" />
