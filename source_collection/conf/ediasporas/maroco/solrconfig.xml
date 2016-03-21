@@ -139,6 +139,20 @@
 
   <searchComponent name="timePicker" class="qlobbe.TimePickerComponent"/>  
 
+  <requestHandler name="/select" class="qlobbe.ArchiveSearchHandler">
+    <lst name="defaults">
+      <str name="q.alt">*:*</str>
+      <str name="df">url</str>
+      <str name="qf">url</str>
+      <str name="pf">url</str>
+      <str name="q.op">AND</str>
+      <str name="lowercaseOperators">false</str>
+      <float name="tie">1</float>
+      <str name="wt">json</str>
+      <str name="json.nl">map</str>   
+    </lst>
+  </requestHandler>  
+
   <!-- default requestHandler -->
 
   <requestHandler name="/standard" class="solr.StandardRequestHandler" default="true">
