@@ -23,28 +23,39 @@
 
   <fields>
 
-    <field name="_indexed_at_tdt"       type="date"          indexed="false" stored="false"  multiValued="false" default="NOW" />
-    <field name="_version_"             type="long"          indexed="true"  stored="true"  multiValued="false"/>
-    <field name="id"                    type="string"        indexed="true"  stored="true"  multiValued="false" required="true" />
-    <field name="active"                type="boolean"       indexed="true"  stored="true"  multiValued="false"/>
+    <field name="_indexed_at_tdt"           type="date"          indexed="false" stored="false"  multiValued="false" default="NOW" />
+    <field name="_version_"                 type="long"          indexed="true"  stored="true"  multiValued="false"/>
+    <field name="id"                        type="string"        indexed="true"  stored="true"  multiValued="false" required="true" />
+    <field name="active"                    type="boolean"       indexed="true"  stored="true"  multiValued="false"/>
     
-    <field name="client_country"        type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
-    <field name="client_ip"             type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
-    <field name="client_lang"           type="string"        indexed="true"  stored="true"  docValues="true" multiValued="true"/>
-    <field name="corpus"                type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
+    <field name="client_country"            type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
+    <field name="client_ip"                 type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
+    <field name="client_lang"               type="string"        indexed="true"  stored="true"  docValues="true" multiValued="true"/>
+    <field name="corpus"                    type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
     
-    <field name="crawl_session"         type="string"        indexed="true"  stored="true"  docValues="true" multiValued="true"/>
-    <field name="date"                  type="date"          indexed="true"  stored="true"  docValues="true" multiValued="true"/>
-    <field name="ip"                    type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>    
-    <field name="length"                type="double"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
+    <field name="crawl_session"             type="string"        indexed="true"  stored="true"  docValues="true" multiValued="true"/>
+    <field name="first_crawl_session"       type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
+    <field name="last_crawl_session"        type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
+    
+    <field name="crawl_session_date"        type="date"          indexed="true"  stored="true"  docValues="true" multiValued="true"/>
+    <field name="first_crawl_session_date"  type="date"          indexed="true"  stored="true"  docValues="true" multiValued="fasle"/>
+    <field name="last_crawl_session_date"   type="date"          indexed="true"  stored="true"  docValues="true" multiValued="true"/>
+    
+    <field name="date"                      type="date"          indexed="true"  stored="true"  docValues="true" multiValued="true"/>
+    <field name="last_modified"             type="date"          indexed="true"  stored="true"  docValues="true" multiValued="false"/>
+    <field name="first_modified"            type="date"          indexed="true"  stored="true"  docValues="true" multiValued="false"/>
 
-    <field name="level"                 type="int"           indexed="true"  stored="true"  docValues="true" multiValued="false"/>
-    <field name="page"                  type="int"           indexed="true"  stored="true"  docValues="true" multiValued="false"/>            
-    <field name="referer_url"           type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
-    <field name="site"                  type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
+    <field name="ip"                        type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
+    <field name="length"                    type="double"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
+
+    <field name="level"                     type="int"           indexed="true"  stored="true"  docValues="true" multiValued="false"/>
+    <field name="link_diaspora"             type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
+    <field name="page"                      type="int"           indexed="true"  stored="true"  docValues="true" multiValued="false"/>            
+    <field name="referer_url"               type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
+    <field name="site"                      type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
     
-    <field name="type"                  type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
-    <field name="url"                   type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false" />
+    <field name="type"                      type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
+    <field name="url"                       type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false" />
     <!-- <field name="TEXT"                  type="text"    indexed="true"  stored="false" multiValued="true" /> -->
 
    </fields>
