@@ -138,6 +138,7 @@
   </requestDispatcher>
 
   <searchComponent name="timePicker" class="qlobbe.TimePickerComponent"/>  
+  <searchComponent name="siteLink" class="qlobbe.SiteLinkComponent"/>  
 
   <requestHandler name="/select" class="qlobbe.ArchiveSearchHandler">
     <lst name="defaults">
@@ -169,6 +170,7 @@
     </lst>
     <arr name="last-components"> 
       <str>timePicker</str>
+      <str>siteLink</str>
     </arr>    
   </requestHandler>
 
