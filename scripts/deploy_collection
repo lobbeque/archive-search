@@ -39,9 +39,11 @@ EOF
 
 init ()
 {
-    MODE=local
+    MODE=
     NB_SHARDS=2
     NB_REPLICA=2
+    TYPE=ediasporas
+    CORPUS=maroco
 
     while getopts ":-:" OPTION
     do
@@ -182,7 +184,7 @@ make_collection ()
     if ! ${SOLR_ROOT}/bin/solr create_collection -c $1 -d ${SOLR_CORES}/$1/conf -n $1 -shards ${NB_SHARDS} -replicationFactor ${NB_REPLICA}; then
         printf '%s\n' 'Collection could not be created !' >&2
         exit 1
-    fi  
+    fi      
 
     # Stop Solr
 
@@ -197,6 +199,15 @@ make_collection ()
         printf '%s\n' 'Zookeeper could not stop !' >&2
         exit 1
     fi
+
+    for i in `seq 1 ${NB_SHARDS}`;
+    do
+        for j in `seq 1 ${NB_REPLICA}`;
+        do
+            mkdir ${REMOTE_SOLR_CORES}/$1_shard${i}_replica${j} && mv ${SOLR_CORES}/$1_shard${i}_replica${j}/data ${REMOTE_SOLR_CORES}/$1_shard${i}_replica${j}/data 2>/dev/null
+            ln -s  ${REMOTE_SOLR_CORES}/$1_shard${i}_replica${j}/data ${SOLR_CORES}/$1_shard${i}_replica${j}/data
+        done       
+    done
 }
 
 install ()

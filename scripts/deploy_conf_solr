@@ -19,7 +19,7 @@ usage()
 USAGE: `basename $0` options
 
 OPTIONS:
-   --mode (optional - default:local ) [local|cloud]
+   --mode (required) [local|cloud]
    --help (optional)
 
 EOF
@@ -28,7 +28,7 @@ EOF
 
 init()
 {
-    MODE=local
+    MODE=
 
     while getopts ":-:" OPTION
     do
@@ -68,18 +68,16 @@ init()
 push()
 {
 
-    echo "Deploying .conf_solr ..."
-
-    if [ -e "/home/${USER}/.conf_solr" ]; then 
-        cp -n /home/${USER}/.conf_solr /home/${USER}/.conf_solr_bck; 
-        rm -f /home/${USER}/.conf_solr;
-    fi
+    cp -n ~/.conf_solr ~/.conf_solr_bck; 
+    rm -f ~/.conf_solr;
 
     if [ "${MODE}" = "local" ]; then
-        cp conf/.conf_solr /home/${USER};
+        echo "Deploying .conf_solr ..."
+        cp conf/.conf_solr ~/;
     else
-        cp conf/.conf_solr_cloud /home/${USER};
-        ln -s /home/${USER}/.conf_solr_cloud /home/${USER}/.conf_solr 
+        echo "Deploying .conf_solr_cloud ..."
+        cp conf/.conf_solr_cloud ~/;
+        ln -s ~/.conf_solr_cloud ~/.conf_solr 
     fi
 }
 

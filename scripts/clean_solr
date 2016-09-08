@@ -28,7 +28,7 @@ EOF
 
 init()
 {
-    MODE=local
+    MODE=
 
     while getopts ":-:" OPTION
     do
@@ -57,29 +57,31 @@ init()
         exitWithUsage "unknwon value ${MODE} for option mode."
     fi
 
-    if [ "${MODE}" = "local" ]; then
-        . conf/.conf_solr
-    else
-        . conf/.conf_solr_cloud
-    fi    
+    . ~/.conf_solr
+   
 }
 
 
 clean()
 {
 
-    echo "Clean Solr-${SOLR_VERSION} & Zookeeper-${ZOOKEEPER_VERSION} repositories ..."
+    if [ "${MODE}" = "cloud" ]; then
+        echo "Clean and backup Remote solr cores ..."
+
+        rm -rf ${REMOTE_SOLR_CORES_BCK} 
+        mv     ${REMOTE_SOLR_CORES} ${REMOTE_SOLR_CORES_BCK}
+        mkdir  ${REMOTE_SOLR_CORES}
+    fi  
+
+    echo "Clean Solr-${SOLR_VERSION} & Zookeeper-${ZOOKEEPER_VERSION} repositories at ${SEARCH_ROOT} ..."
 
     if [ ! -e ${SEARCH_ROOT} ]; then
         mkdir -p ${SEARCH_ROOT}
     fi  
 
-    ${SOLR_ROOT}/stop
-
-    ${ZOOKEEPER_ROOT}/bin/zkServer.sh stop
+    ${SOLR_ROOT}/stop && ${ZOOKEEPER_ROOT}/bin/zkServer.sh stop
 
     cd ${SEARCH_ROOT} && rm -rf solr-${SOLR_VERSION} && rm -rf zookeeper-${ZOOKEEPER_VERSION};      
-
 }
 
 

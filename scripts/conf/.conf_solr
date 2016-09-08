@@ -1,6 +1,7 @@
 #!/bin/bash
 
 USER=qlobbe
+START_MODE=local
 SOLR_VERSION=5.4.1
 SOLR_PORT=8800
 SEARCH_ROOT=/home/${USER}/search
