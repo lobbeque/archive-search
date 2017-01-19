@@ -48,6 +48,8 @@ finding_collections()
 
             echo "Looking for ${name} ..."   
 
+            sleep 3
+
             wget -O /dev/null "http://localhost:${SOLR_PORT}/solr/${name}/select/?q=*:*" >/dev/null 2>&1 && UP=true && echo "Collection ${name} is up !" && COLLECTION_UP="${COLLECTION_UP} ${name}"
 
         fi

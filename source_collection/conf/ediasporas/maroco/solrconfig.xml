@@ -11,6 +11,8 @@
 
   <dataDir>${solr.data.dir:}</dataDir>
 
+  <!-- <dataDir>/infres/ir500/ic2+/qlobbe/data/solr/${solr.data.dir:}</dataDir> -->
+
   <!-- The DirectoryFactory to use for indexes -->
 
   <directoryFactory name="DirectoryFactory" class="${solr.directoryFactory:solr.MMapDirectoryFactory}"/>
@@ -139,6 +141,7 @@
 
   <searchComponent name="timePicker" class="qlobbe.TimePickerComponent"/>  
   <searchComponent name="siteLink" class="qlobbe.SiteLinkComponent"/>  
+  <searchComponent name="contextMap" class="qlobbe.ContextMapComponent"/>
 
   <requestHandler name="/select" class="qlobbe.ArchiveSearchHandler">
     <lst name="defaults">
@@ -169,6 +172,7 @@
       <str name="json.nl">map</str>
     </lst>
     <arr name="last-components"> 
+      <str>contextMap</str>
       <str>timePicker</str>
       <str>siteLink</str>
     </arr>    

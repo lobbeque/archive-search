@@ -36,11 +36,11 @@
 
     <bool name="genericCoreNodeNames">${genericCoreNodeNames:true}</bool>
 
-    <int name="zkClientTimeout">${zkClientTimeout:30000}</int>
+    <int name="zkClientTimeout">60000000</int>
     <int name="distribUpdateSoTimeout">${distribUpdateSoTimeout:600000}</int>
     <int name="distribUpdateConnTimeout">${distribUpdateConnTimeout:60000}</int>
 
-    <!-- __ZOO_HOST__ -->
+    <str name="zkHost">127.0.0.1:2181,</str>
 
   </solrcloud>
 

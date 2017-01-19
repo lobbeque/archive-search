@@ -20,5 +20,6 @@ SOLR_RUN=${SOLR_ROOT}/run
 SOLR_SERVER=${SOLR_ROOT}/server
 SOLR_LOGS=${SOLR_SERVER}/logs
 SOLR_CORES=${SOLR_SERVER}/solr
+# SOLR_CORES=/infres/ir500/ic2+/${USER}/data/solr
 REMOTE_SOLR_CORES=/infres/ir500/ic2+/${USER}/data/solr
 REMOTE_SOLR_CORES_BCK=/infres/ir500/ic2+/${USER}/data/solr_bck

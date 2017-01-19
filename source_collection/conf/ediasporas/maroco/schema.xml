@@ -47,15 +47,21 @@
 
     <field name="ip"                        type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
     <field name="length"                    type="double"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
-
     <field name="level"                     type="int"           indexed="true"  stored="true"  docValues="true" multiValued="false"/>
-    <field name="link_diaspora"             type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
+    
+    <field name="link_in_path"              type="string"        indexed="true"   stored="true"   docValues="true" multiValued="true"/>
+    <field name="link_in_url"               type="string"        indexed="false"  stored="false"  docValues="true" multiValued="true"/>
+    <field name="link_out_social"           type="string"        indexed="true"   stored="true"   docValues="true" multiValued="true"/>
+    <field name="link_out_url"              type="string"        indexed="true"   stored="true"   docValues="true" multiValued="true"/>
+    <field name="link_out_corpus"           type="string"        indexed="true"   stored="true"   docValues="true" multiValued="true"/>   
+    
     <field name="page"                      type="int"           indexed="true"  stored="true"  docValues="true" multiValued="false"/>            
     <field name="referer_url"               type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
     <field name="site"                      type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
     
     <field name="type"                      type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
     <field name="url"                       type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false" />
+    <field name="url_sha"                   type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false" />    
     <!-- <field name="TEXT"                  type="text"    indexed="true"  stored="false" multiValued="true" /> -->
 
    </fields>
