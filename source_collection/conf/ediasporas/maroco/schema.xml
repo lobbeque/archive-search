@@ -60,15 +60,35 @@
     <field name="site"                      type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
     
     <field name="type"                      type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
-    <field name="url"                       type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false" />
-    <field name="url_sha"                   type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false" />    
-    <!-- <field name="TEXT"                  type="text"    indexed="true"  stored="false" multiValued="true" /> -->
+    <field name="url"                       type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
+    <field name="url_sha"                   type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>    
+
+    <!-- extracted from the archived page -->
+
+    <field name="head_title"                    type="string"    indexed="true"  stored="true"  docValues="false" multiValued="false" default=""/>
+    <field name="head_description"              type="string"    indexed="true"  stored="true"  docValues="false" multiValued="false" default=""/>
+    <field name="head_img"                      type="string"    indexed="true"  stored="true"  docValues="false" multiValued="false" default=""/>
+    <field name="head_twitter_creator"          type="string"    indexed="true"  stored="true"  docValues="true"  multiValued="false" default=""/>
+    <field name="head_published_time"           type="string"    indexed="true"  stored="true"  docValues="true"  multiValued="false" default=""/>    
+    <field name="head_published_time_formated"  type="date"      indexed="true"  stored="true"  docValues="true"  multiValued="false"/>
+    <field name="head_publisher"                type="string"    indexed="true"  stored="true"  docValues="true"  multiValued="false" default=""/>    
+
+    <field name="content_title"                 type="string"    indexed="true"  stored="true"  docValues="false" multiValued="false" default=""/>
+    <field name="content_date"                  type="string"    indexed="true"  stored="true"  docValues="true"  multiValued="false" default=""/>
+    <field name="content_date_formated"         type="date"      indexed="true"  stored="true"  docValues="true"  multiValued="false" default=""/>
+    <field name="content_author"                type="string"    indexed="true"  stored="true"  docValues="true"  multiValued="false" default=""/>
+
+    <!-- concatenated in one searchable field -->
+
+    <field name="content"                       type="string"    indexed="true"  stored="false" multiValued="true"/>
+
 
    </fields>
 
   <uniqueKey>id</uniqueKey>
 
-  <!-- <copyField source="manu" dest="manu_exact"/> -->
+  <copyField source="head_description" dest="content"/>
+  <copyField source="content_title"    dest="content"/>  
 
   <similarity class="solr.DefaultSimilarityFactory"/>
 
