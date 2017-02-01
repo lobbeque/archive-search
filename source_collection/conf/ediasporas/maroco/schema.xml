@@ -92,9 +92,9 @@
 
   <uniqueKey>id</uniqueKey>
 
-  <copyField source="page_meta_description"  dest="content"/>
-  <copyField source="page_title"             dest="content"/>  
-  <copyField source="elements.content"       dest="content"/>  
+  <copyField source="page_meta_description"  dest="page_content"/>
+  <copyField source="page_title"             dest="page_content"/>  
+  <copyField source="elements.content"       dest="page_content"/>  
 
   <similarity class="solr.DefaultSimilarityFactory"/>
 
