@@ -69,19 +69,19 @@
     <field name="page_meta_description"     type="string"       indexed="true"  stored="true"  docValues="false" multiValued="false" default=""/>
     <field name="page_meta_img"             type="string"       indexed="true"  stored="true"  docValues="false" multiValued="false" default=""/>
     <field name="page_meta_twitter_author"  type="string"       indexed="true"  stored="true"  docValues="true"  multiValued="false" default=""/>
-    <field name="page_meta_date"            type="date"         indexed="true"  stored="true"  docValues="true"  multiValued="false" default=""/>    
+    <field name="page_meta_date"            type="date"         indexed="true"  stored="true"  docValues="true"  multiValued="false"/>    
     <field name="page_meta_author"          type="string"       indexed="true"  stored="true"  docValues="true"  multiValued="false" default=""/>    
 
     <field name="page_title"                type="string"       indexed="true"  stored="true"  docValues="false" multiValued="false" default=""/>
-    <field name="page_date"                 type="date"         indexed="true"  stored="true"  docValues="true"  multiValued="false" default=""/>
+    <field name="page_date"                 type="date"         indexed="true"  stored="true"  docValues="true"  multiValued="false"/>
     <field name="page_author"               type="string"       indexed="true"  stored="true"  docValues="true"  multiValued="false" default=""/>
 
     <field name="elements"                  type="string"       indexed="true"  stored="true"  multiValued="true"/> 
 
     <field name="elements.type"             type="string"       indexed="true"  stored="true"  docValues="true"  multiValued="false" default=""/>
     <field name="elements.markup"           type="string"       indexed="true"  stored="true"  docValues="false" multiValued="false" default=""/>
-    <field name="elements.depth"            type="int"          indexed="true"  stored="true"  docValues="false" multiValued="false" default=""/>
-    <field name="elements.offset"           type="int"          indexed="true"  stored="true"  docValues="false" multiValued="false" default=""/>
+    <field name="elements.depth"            type="int"          indexed="true"  stored="true"  docValues="false" multiValued="false"/>
+    <field name="elements.offset"           type="int"          indexed="true"  stored="true"  docValues="false" multiValued="false"/>
     <field name="elements.content"          type="string"       indexed="true"  stored="true"  docValues="false" multiValued="false" default=""/>
 
     <!-- concatenated in one searchable field -->
