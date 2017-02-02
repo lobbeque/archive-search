@@ -82,11 +82,11 @@
 
     <field name="_root_" type="string" indexed="true" stored="false" multiValued="true"/>
 
-    <field name="element.type"             type="string"       indexed="true"  stored="true"  docValues="true"  multiValued="false" default=""/>
-    <field name="element.markup"           type="string"       indexed="true"  stored="true"  docValues="false" multiValued="false" default=""/>
-    <field name="element.depth"            type="int"          indexed="true"  stored="true"  docValues="false" multiValued="false"/>
-    <field name="element.offset"           type="int"          indexed="true"  stored="true"  docValues="false" multiValued="false"/>
-    <field name="element.content"          type="string"       indexed="true"  stored="true"  docValues="false" multiValued="false" default=""/>
+    <field name="element_type"             type="string"       indexed="true"  stored="true"  docValues="true"  multiValued="false" default=""/>
+    <field name="element_markup"           type="string"       indexed="true"  stored="true"  docValues="false" multiValued="false" default=""/>
+    <field name="element_depth"            type="int"          indexed="true"  stored="true"  docValues="false" multiValued="false"/>
+    <field name="element_offset"           type="int"          indexed="true"  stored="true"  docValues="false" multiValued="false"/>
+    <field name="element_content"          type="string"       indexed="true"  stored="true"  docValues="false" multiValued="false" default=""/>
 
     <!-- concatenated in one searchable field -->
 
@@ -98,7 +98,7 @@
 
   <copyField source="page_meta_description"  dest="page_content"/>
   <copyField source="page_title"             dest="page_content"/>  
-  <copyField source="elements.content"       dest="page_content"/>  
+  <copyField source="element_content"        dest="page_content"/>  
 
   <similarity class="solr.DefaultSimilarityFactory"/>
 
