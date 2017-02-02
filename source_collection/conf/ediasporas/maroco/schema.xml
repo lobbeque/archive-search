@@ -76,13 +76,17 @@
     <field name="page_date"                 type="date"         indexed="true"  stored="true"  docValues="true"  multiValued="false"/>
     <field name="page_author"               type="string"       indexed="true"  stored="true"  docValues="true"  multiValued="false" default=""/>
 
-    <field name="elements"                  type="string"       indexed="true"  stored="true"  multiValued="true"/> 
+    <!-- <field name="elements"                  type="string"       indexed="true"  stored="true"  multiValued="true"/>  -->
 
-    <field name="elements.type"             type="string"       indexed="true"  stored="true"  docValues="true"  multiValued="false" default=""/>
-    <field name="elements.markup"           type="string"       indexed="true"  stored="true"  docValues="false" multiValued="false" default=""/>
-    <field name="elements.depth"            type="int"          indexed="true"  stored="true"  docValues="false" multiValued="false"/>
-    <field name="elements.offset"           type="int"          indexed="true"  stored="true"  docValues="false" multiValued="false"/>
-    <field name="elements.content"          type="string"       indexed="true"  stored="true"  docValues="false" multiValued="false" default=""/>
+    <!-- Needed for nested elements -->
+
+    <field name="_root_" type="string" indexed="true" stored="false" multiValued="true"/>
+
+    <field name="element.type"             type="string"       indexed="true"  stored="true"  docValues="true"  multiValued="false" default=""/>
+    <field name="element.markup"           type="string"       indexed="true"  stored="true"  docValues="false" multiValued="false" default=""/>
+    <field name="element.depth"            type="int"          indexed="true"  stored="true"  docValues="false" multiValued="false"/>
+    <field name="element.offset"           type="int"          indexed="true"  stored="true"  docValues="false" multiValued="false"/>
+    <field name="element.content"          type="string"       indexed="true"  stored="true"  docValues="false" multiValued="false" default=""/>
 
     <!-- concatenated in one searchable field -->
 
