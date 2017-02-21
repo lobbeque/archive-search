@@ -16,90 +16,127 @@
    
     <fieldType name="double"     class="solr.TrieDoubleField" precisionStep="0" omitNorms="true" positionIncrementGap="0"/> 
 
-    <fieldType name="boolean"    class="solr.BoolField" sortMissingLast="true" omitNorms="true"/>    
+    <fieldType name="boolean"    class="solr.BoolField" sortMissingLast="true" omitNorms="true"/>  
+
+    <fieldType name="text_general" class="solr.TextField" sortMissingLast="true" omitNorms="true"/>  
+
+    <fieldType name="text" class="solr.TextField">
+      <analyzer type="index">
+        <tokenizer class="solr.StandardTokenizerFactory"/>
+        <filter class="solr.StandardFilterFactory"/>
+      </analyzer>
+    </fieldType> 
+
+    <fieldtype name="shingle" class="solr.TextField">
+        <analyzer>
+            <tokenizer class="solr.WhitespaceTokenizerFactory"/>
+            <filter class="solr.ShingleFilterFactory" minShingleSize="2" maxShingleSize="3"/>
+        </analyzer>
+    </fieldtype>
 
   </types>
 
 
   <fields>
 
-    <field name="_indexed_at_tdt"           type="date"          indexed="false" stored="false"  multiValued="false" default="NOW" />
+    <!-- meta fields -->
+
+    <field name="_indexed_at_tdt"           type="date"          indexed="false" stored="false" multiValued="false" default="NOW"  />
     <field name="_version_"                 type="long"          indexed="true"  stored="true"  multiValued="false"/>
     <field name="id"                        type="string"        indexed="true"  stored="true"  multiValued="false" required="true" />
-    <field name="active"                    type="boolean"       indexed="true"  stored="true"  multiValued="false"/>
-    
+
+    <!-- archive fields -->
+
+    <field name="archive_active"            type="boolean"       indexed="true"  stored="true"  multiValued="false"/>
+    <field name="archive_corpus"            type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
+    <field name="archive_ip"                type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
+    <field name="archive_length"            type="double"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
+    <field name="archive_level"             type="int"           indexed="true"  stored="true"  docValues="true" multiValued="false"/>
+    <field name="archive_referer"           type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
+    <field name="archive_mime"              type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>    
+
+    <!-- client fields -->
+
     <field name="client_country"            type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
     <field name="client_ip"                 type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
-    <field name="client_lang"               type="string"        indexed="true"  stored="true"  docValues="true" multiValued="true"/>
-    <field name="corpus"                    type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
-    
-    <field name="crawl_session"             type="string"        indexed="true"  stored="true"  docValues="true" multiValued="true"/>
-    <field name="first_crawl_session"       type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
-    <field name="last_crawl_session"        type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
-    
-    <field name="crawl_session_date"        type="date"          indexed="true"  stored="true"  docValues="true" multiValued="true"/>
-    <field name="first_crawl_session_date"  type="date"          indexed="true"  stored="true"  docValues="true" multiValued="fasle"/>
-    <field name="last_crawl_session_date"   type="date"          indexed="true"  stored="true"  docValues="true" multiValued="true"/>
-    
-    <field name="date"                      type="date"          indexed="true"  stored="true"  docValues="true" multiValued="true"/>
-    <field name="last_modified"             type="date"          indexed="true"  stored="true"  docValues="true" multiValued="false"/>
-    <field name="first_modified"            type="date"          indexed="true"  stored="true"  docValues="true" multiValued="false"/>
+    <field name="client_lang"               type="string"        indexed="true"  stored="true"  docValues="true" multiValued="true" />
 
-    <field name="ip"                        type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
-    <field name="length"                    type="double"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
-    <field name="level"                     type="int"           indexed="true"  stored="true"  docValues="true" multiValued="false"/>
-    
-    <field name="link_in_path"              type="string"        indexed="true"   stored="true"   docValues="true" multiValued="true"/>
-    <field name="link_in_url"               type="string"        indexed="false"  stored="false"  docValues="true" multiValued="true"/>
-    <field name="link_out_social"           type="string"        indexed="true"   stored="true"   docValues="true" multiValued="true"/>
-    <field name="link_out_url"              type="string"        indexed="true"   stored="true"   docValues="true" multiValued="true"/>
-    <field name="link_out_corpus"           type="string"        indexed="true"   stored="true"   docValues="true" multiValued="true"/>   
-    
-    <field name="page"                      type="int"           indexed="true"  stored="true"  docValues="true" multiValued="false"/>            
-    <field name="referer_url"               type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
-    <field name="site"                      type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
-    
-    <field name="type"                      type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
-    <field name="url"                       type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
-    <field name="url_sha"                   type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>    
+    <!-- crawl fields -->
 
-    <!-- extracted from the archived page -->
+    <field name="crawl_id"                  type="string"        indexed="true"  stored="true"  docValues="true" multiValued="true" />
+    <field name="crawl_id_f"                type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
+    <field name="crawl_id_l"                type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
+    <field name="crawl_date"                type="date"          indexed="true"  stored="true"  docValues="true" multiValued="true" />
+    <field name="crawl_date_f"              type="date"          indexed="true"  stored="true"  docValues="true" multiValued="fasle"/>
+    <field name="crawl_date_l"              type="date"          indexed="true"  stored="true"  docValues="true" multiValued="true" />
+    
+    <!-- download fields -->
 
-    <field name="page_meta_title"           type="string"       indexed="true"  stored="true"  docValues="false" multiValued="false" default=""/>
-    <field name="page_meta_description"     type="string"       indexed="true"  stored="true"  docValues="false" multiValued="false" default=""/>
-    <field name="page_meta_img"             type="string"       indexed="true"  stored="true"  docValues="false" multiValued="false" default=""/>
-    <field name="page_meta_twitter_author"  type="string"       indexed="true"  stored="true"  docValues="true"  multiValued="false" default=""/>
+    <field name="download_date"             type="date"          indexed="true"  stored="true"  docValues="true" multiValued="true" />
+    <field name="download_date_f"           type="date"          indexed="true"  stored="true"  docValues="true" multiValued="false"/>
+    <field name="download_date_l"           type="date"          indexed="true"  stored="true"  docValues="true" multiValued="false"/> 
+    
+    <!-- page fields -->
+    
+    <field name="page_site"                 type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
+    <field name="page_url"                  type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
+    <field name="page_url_id"               type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
+    <field name="page_space"                type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>        
+
+    <!-- extracted page fields -->
+
+    <field name="page_link_in_path"         type="string"        indexed="true"   stored="true"   docValues="true" multiValued="true"/>
+    <field name="page_link_in_url"          type="string"        indexed="false"  stored="false"  docValues="true" multiValued="true"/>
+    <field name="page_link_out_social"      type="string"        indexed="true"   stored="true"   docValues="true" multiValued="true"/>
+    <field name="page_link_out_url"         type="string"        indexed="true"   stored="true"   docValues="true" multiValued="true"/>
+    <field name="page_link_out_corpus"      type="string"        indexed="true"   stored="true"   docValues="true" multiValued="true"/>     
+
+    <field name="page_meta_title"           type="string"       indexed="true"  stored="true"  docValues="false" multiValued="false"/>
+    <field name="page_meta_description"     type="text"         indexed="true"  stored="true"  docValues="false" multiValued="false"/>
+    <field name="page_meta_img"             type="string"       indexed="true"  stored="true"  docValues="false" multiValued="false"/>
+    <field name="page_meta_twitter_author"  type="string"       indexed="true"  stored="true"  docValues="true"  multiValued="false"/>
     <field name="page_meta_date"            type="date"         indexed="true"  stored="true"  docValues="true"  multiValued="false"/>    
-    <field name="page_meta_author"          type="string"       indexed="true"  stored="true"  docValues="true"  multiValued="false" default=""/>    
+    <field name="page_meta_author"          type="string"       indexed="true"  stored="true"  docValues="true"  multiValued="false"/>    
 
-    <field name="page_title"                type="string"       indexed="true"  stored="true"  docValues="false" multiValued="false" default=""/>
+    <field name="page_title"                type="text"         indexed="true"  stored="true"  docValues="false" multiValued="false"/>
+    <field name="page_title_shingle"        type="shingle"      indexed="true"  stored="false" docValues="false" multiValued="false"/>
     <field name="page_date"                 type="date"         indexed="true"  stored="true"  docValues="true"  multiValued="false"/>
-    <field name="page_author"               type="string"       indexed="true"  stored="true"  docValues="true"  multiValued="false" default=""/>
+    <field name="page_author"               type="string"       indexed="true"  stored="true"  docValues="true"  multiValued="false"/>
 
-    <!-- <field name="elements"                  type="string"       indexed="true"  stored="true"  multiValued="true"/>  -->
-
-    <!-- Needed for nested elements -->
+    <!-- extracted element fields -->
 
     <field name="_root_" type="string" indexed="true" stored="false" multiValued="true"/>
 
-    <field name="element_type"             type="string"       indexed="true"  stored="true"  docValues="true"  multiValued="false" default=""/>
-    <field name="element_markup"           type="string"       indexed="true"  stored="true"  docValues="false" multiValued="false" default=""/>
-    <field name="element_depth"            type="int"          indexed="true"  stored="true"  docValues="false" multiValued="false"/>
-    <field name="element_offset"           type="int"          indexed="true"  stored="true"  docValues="false" multiValued="false"/>
-    <field name="element_content"          type="string"       indexed="true"  stored="true"  docValues="false" multiValued="false" default=""/>
+    <field name="seq_type"             type="string"       indexed="true"  stored="true"  docValues="true"  multiValued="true" />
+    <field name="seq_mask"             type="string"       indexed="true"  stored="true"  docValues="true"  multiValued="false"/>
+    <field name="seq_markup"           type="string"       indexed="true"  stored="true"  docValues="true"  multiValued="true" />
+    <field name="seq_depth"            type="int"          indexed="true"  stored="true"  docValues="false" multiValued="true" />
+    <field name="seq_offset"           type="int"          indexed="true"  stored="true"  docValues="false" multiValued="true" />
+    <field name="seq_date"             type="date"         indexed="true"  stored="true"  docValues="false" multiValued="false"/>
+    <field name="seq_author"           type="string"       indexed="true"  stored="true"  docValues="false" multiValued="false"/>
+    <field name="seq_content"          type="text"         indexed="true"  stored="true"  docValues="false" multiValued="true" />
+    <field name="seq_text"             type="text"         indexed="true"  stored="false" docValues="false" multiValued="true" />    
+    <field name="seq_text_shingle"     type="shingle"      indexed="true"  stored="false" docValues="false" multiValued="true" />
+    <field name="seq_id"               type="text"         indexed="true"  stored="true"  docValues="false" multiValued="false"/>
 
     <!-- concatenated in one searchable field -->
 
-    <field name="page_content"              type="string"       indexed="true"  stored="false" multiValued="true"/>
+    <field name="page_content"              type="text"        indexed="true"  stored="false" multiValued="true"/>
+    <field name="page_content_shingle"      type="shingle"     indexed="true"  stored="false" multiValued="true"/>
 
    </fields>
 
-  <uniqueKey>id</uniqueKey>
+    <uniqueKey>id</uniqueKey>
 
-  <copyField source="page_meta_description"  dest="page_content"/>
-  <copyField source="page_title"             dest="page_content"/>  
-  <copyField source="element_content"        dest="page_content"/>  
+    <copyField source="seq_text"              dest="seq_text_shingle"/>
 
-  <similarity class="solr.DefaultSimilarityFactory"/>
+    <copyField source="seq_text"              dest="page_content_shingle"/>
+    <copyField source="page_title"            dest="page_content_shingle"/>    
+    
+    <copyField source="seq_text"              dest="page_content"/>
+    <copyField source="page_meta_description" dest="page_content"/>
+    <copyField source="page_title"            dest="page_content"/>      
+
+    <similarity class="solr.DefaultSimilarityFactory"/>
 
 </schema>
