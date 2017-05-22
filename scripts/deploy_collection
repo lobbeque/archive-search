@@ -121,6 +121,7 @@ make_directory_local ()
     cp ../source_collection/conf/core.properties ${SOLR_CORES}/$1/
     cp ../source_collection/conf/$2/$3/schema.xml ${SOLR_CORES}/$1/conf/
     cp ../source_collection/conf/$2/$3/solrconfig.xml ${SOLR_CORES}/$1/conf/
+    cp ../source_collection/conf/$2/$3/enumsConfig.xml ${SOLR_CORES}/$1/conf/
 }
 
 config_core ()
@@ -162,8 +163,9 @@ make_collection ()
     mkdir -p ${SOLR_CORES}/$1
     mkdir -p ${SOLR_CORES}/$1/conf
 
-    cp ../source_collection/conf/$2/$3/schema.xml ${SOLR_CORES}/$1/conf/
+    cp ../source_collection/conf/$2/$3/schema.xml ${SOLR_CORES}/$1/conf/  
     cp ../source_collection/conf/$2/$3/solrconfig.xml ${SOLR_CORES}/$1/conf/    
+    cp ../source_collection/conf/$2/$3/enumsConfig.xml ${SOLR_CORES}/$1/conf/  
 
     # Start Zookeeper
 
@@ -200,14 +202,14 @@ make_collection ()
         exit 1
     fi
 
-    # for i in `seq 1 ${NB_SHARDS}`;
-    # do
-    #     for j in `seq 1 ${NB_REPLICA}`;
-    #     do
-    #         mkdir ${REMOTE_SOLR_CORES}/$1_shard${i}_replica${j} && mv ${SOLR_CORES}/$1_shard${i}_replica${j}/data ${REMOTE_SOLR_CORES}/$1_shard${i}_replica${j}/data 2>/dev/null
-    #         ln -s  ${REMOTE_SOLR_CORES}/$1_shard${i}_replica${j}/data ${SOLR_CORES}/$1_shard${i}_replica${j}/data
-    #     done       
-    # done
+    for i in `seq 1 ${NB_SHARDS}`;
+    do
+        for j in `seq 1 ${NB_REPLICA}`;
+        do
+            mkdir ${REMOTE_SOLR_CORES}/$1_shard${i}_replica${j} && mv ${SOLR_CORES}/$1_shard${i}_replica${j}/data ${REMOTE_SOLR_CORES}/$1_shard${i}_replica${j}/data 2>/dev/null
+            ln -s  ${REMOTE_SOLR_CORES}/$1_shard${i}_replica${j}/data ${SOLR_CORES}/$1_shard${i}_replica${j}/data
+        done       
+    done
 }
 
 install ()

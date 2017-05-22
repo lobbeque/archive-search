@@ -69,7 +69,8 @@ clean()
         echo "Clean and backup Remote solr cores ..."
 
         rm -rf ${REMOTE_SOLR_CORES_BCK} 
-        mv     ${SOLR_CORES} ${REMOTE_SOLR_CORES_BCK} 2>/dev/null
+        mv     ${REMOTE_SOLR_CORES} ${REMOTE_SOLR_CORES_BCK} 2>/dev/null
+        mkdir  ${REMOTE_SOLR_CORES}
     fi  
 
     echo "Clean Solr-${SOLR_VERSION} & Zookeeper-${ZOOKEEPER_VERSION} repositories at ${SEARCH_ROOT} ..."

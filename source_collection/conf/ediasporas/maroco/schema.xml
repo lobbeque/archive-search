@@ -22,17 +22,26 @@
 
     <fieldType name="text" class="solr.TextField">
       <analyzer type="index">
+        <filter class="solr.LowerCaseFilterFactory"/>        
         <tokenizer class="solr.StandardTokenizerFactory"/>
-        <filter class="solr.StandardFilterFactory"/>
+        <!-- filter -->        
+        <filter class="solr.ElisionFilterFactory"/>
+        <filter class="solr.SnowballPorterFilterFactory" language="French" />        
       </analyzer>
     </fieldType> 
 
     <fieldtype name="shingle" class="solr.TextField">
         <analyzer>
-            <tokenizer class="solr.WhitespaceTokenizerFactory"/>
+            <filter class="solr.LowerCaseFilterFactory"/>            
+            <tokenizer class="solr.StandardTokenizerFactory"/>
+            <!-- filter -->        
+            <filter class="solr.ElisionFilterFactory"/>
+            <filter class="solr.SnowballPorterFilterFactory" language="French" />            
             <filter class="solr.ShingleFilterFactory" minShingleSize="2" maxShingleSize="3"/>
         </analyzer>
-    </fieldtype>
+    </fieldtype>  
+
+    <fieldType name="dateAccuracyLevel" class="solr.EnumField" enumsConfig="enumsConfig.xml" enumName="dateAccuracy"/>
 
   </types>
 
@@ -53,7 +62,9 @@
     <field name="archive_length"            type="double"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
     <field name="archive_level"             type="int"           indexed="true"  stored="true"  docValues="true" multiValued="false"/>
     <field name="archive_referer"           type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
-    <field name="archive_mime"              type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>    
+    <field name="archive_mime"              type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>
+
+    <field name="is_page"                   type="boolean"       indexed="true"  stored="false" multiValued="false" default="false"/>    
 
     <!-- client fields -->
 
@@ -99,43 +110,55 @@
     <field name="page_meta_author"          type="string"       indexed="true"  stored="true"  docValues="true"  multiValued="false"/>    
 
     <field name="page_title"                type="text"         indexed="true"  stored="true"  docValues="false" multiValued="false"/>
-    <field name="page_title_shingle"        type="shingle"      indexed="true"  stored="false" docValues="false" multiValued="false"/>
     <field name="page_date"                 type="date"         indexed="true"  stored="true"  docValues="true"  multiValued="false"/>
-    <field name="page_author"               type="string"       indexed="true"  stored="true"  docValues="true"  multiValued="false"/>
+    <field name="page_date_accuracy"        type="dateAccuracyLevel"  indexed="true"  stored="true"  docValues="true"  multiValued="false"/>
+    <field name="page_author"               type="string"       indexed="true"  stored="true"  docValues="true"  multiValued="true" default="unknown_author"/>
 
-    <!-- extracted element fields -->
+        <!-- extracted sequence fields -->
 
-    <field name="_root_" type="string" indexed="true" stored="false" multiValued="true"/>
+        <field name="_root_"               type="string"       indexed="true" stored="false" multiValued="true"/>
 
-    <field name="seq_type"             type="string"       indexed="true"  stored="true"  docValues="true"  multiValued="true" />
-    <field name="seq_mask"             type="string"       indexed="true"  stored="true"  docValues="true"  multiValued="false"/>
-    <field name="seq_markup"           type="string"       indexed="true"  stored="true"  docValues="true"  multiValued="true" />
-    <field name="seq_depth"            type="int"          indexed="true"  stored="true"  docValues="false" multiValued="true" />
-    <field name="seq_offset"           type="int"          indexed="true"  stored="true"  docValues="false" multiValued="true" />
-    <field name="seq_date"             type="date"         indexed="true"  stored="true"  docValues="false" multiValued="false"/>
-    <field name="seq_author"           type="string"       indexed="true"  stored="true"  docValues="false" multiValued="false"/>
-    <field name="seq_content"          type="text"         indexed="true"  stored="true"  docValues="false" multiValued="true" />
-    <field name="seq_text"             type="text"         indexed="true"  stored="false" docValues="false" multiValued="true" />    
-    <field name="seq_text_shingle"     type="shingle"      indexed="true"  stored="false" docValues="false" multiValued="true" />
-    <field name="seq_id"               type="text"         indexed="true"  stored="true"  docValues="false" multiValued="false"/>
+        <field name="seq_type"             type="string"       indexed="true"  stored="true"  docValues="true"  multiValued="true" />
+        <field name="seq_mask"             type="string"       indexed="true"  stored="true"  docValues="true"  multiValued="false"/>
+        <field name="seq_markup"           type="string"       indexed="true"  stored="true"  docValues="true"  multiValued="true" />
+        <field name="seq_depth"            type="int"          indexed="true"  stored="true"  docValues="false" multiValued="true" />
+        <field name="seq_offset"           type="int"          indexed="true"  stored="true"  docValues="false" multiValued="true" />
+        <field name="seq_date"             type="date"         indexed="true"  stored="true"  docValues="false" multiValued="false"/>
+        <field name="seq_date_accuracy"    type="dateAccuracyLevel"  indexed="true"  stored="true"  docValues="true"  multiValued="false"/>        
+        <field name="seq_author"           type="string"       indexed="true"  stored="true"  docValues="false" multiValued="true" default="unknown_author"/>
+        <field name="seq_content"          type="text"         indexed="true"  stored="true"  docValues="false" multiValued="true" />
+        <field name="seq_content_id"       type="string"       indexed="true"  stored="true"  docValues="true" multiValued="false"/>
 
-    <!-- concatenated in one searchable field -->
+        <!-- inherited sequence fields -->
 
-    <field name="page_content"              type="text"        indexed="true"  stored="false" multiValued="true"/>
-    <field name="page_content_shingle"      type="shingle"     indexed="true"  stored="false" multiValued="true"/>
+        <field name="seq_url"              type="string"       indexed="true"  stored="true"  docValues="false" multiValued="false"/>
+        <field name="seq_site"             type="string"       indexed="true"  stored="true"  docValues="false" multiValued="false"/>
+        <field name="seq_url_id"           type="string"       indexed="true"  stored="true"  docValues="true" multiValued="false"/>
+        <field name="seq_page_id"          type="string"       indexed="true"  stored="true"  docValues="true" multiValued="false"/>
+        <field name="seq_title"            type="string"       indexed="true"  stored="true"  docValues="false" multiValued="false"/>
+        <field name="seq_space"            type="string"       indexed="true"  stored="true"  docValues="false" multiValued="false"/>  
+
+        <!-- searchable sequence fields -->
+
+        <field name="seq_text"             type="text"         indexed="true"  stored="false" docValues="false" multiValued="true" />    
+        <field name="seq_text_shingle"     type="shingle"      indexed="true"  stored="false" docValues="false" multiValued="true" />
+
+    <!-- searchable page fields -->
+
+    <field name="page_text"                 type="text"        indexed="true"  stored="false" multiValued="true"/>
+    <field name="page_text_shingle"         type="shingle"     indexed="true"  stored="false" multiValued="true"/>        
 
    </fields>
 
     <uniqueKey>id</uniqueKey>
 
-    <copyField source="seq_text"              dest="seq_text_shingle"/>
+    <!-- fields combinations -->
 
-    <copyField source="seq_text"              dest="page_content_shingle"/>
-    <copyField source="page_title"            dest="page_content_shingle"/>    
-    
-    <copyField source="seq_text"              dest="page_content"/>
-    <copyField source="page_meta_description" dest="page_content"/>
-    <copyField source="page_title"            dest="page_content"/>      
+    <copyField source="download_date_f"       dest="page_date"/>
+    <copyField source="seq_text"              dest="seq_text_shingle"/> 
+    <copyField source="page_title"            dest="page_text_shingle"/>
+    <copyField source="page_meta_description" dest="page_text_shingle"/>  
+    <copyField source="page_text"             dest="page_text_shingle"/>      
 
     <similarity class="solr.DefaultSimilarityFactory"/>
 

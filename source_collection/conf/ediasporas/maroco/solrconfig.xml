@@ -146,7 +146,7 @@
   <requestHandler name="/select" class="qlobbe.ArchiveSearchHandler">
     <lst name="defaults">
       <str name="q.alt">*:*</str>
-      <str name="df">page_content</str>
+      <str name="df">page_text_shingle</str>
       <str name="q.op">AND</str>
       <str name="lowercaseOperators">false</str>
       <float name="tie">1</float>
@@ -160,7 +160,7 @@
   <requestHandler name="/standard" class="solr.StandardRequestHandler" default="true">
     <lst name="defaults">
       <str name="q.alt">*:*</str>
-      <str name="df">page_content</str>
+      <str name="df">page_text_shingle</str>
       <str name="q.op">AND</str>
       <str name="lowercaseOperators">false</str>
       <float name="tie">1</float>
