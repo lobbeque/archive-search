@@ -34,7 +34,7 @@
     <!-- event fields -->
 
     <field name="date"                      type="date"          indexed="true"  stored="true"  docValues="true" multiValued="fasle"/>
-    <field name="title"                     type="text"          indexed="true"  stored="false" multiValued="true"/>
+    <field name="title"                     type="text"          indexed="true"  stored="true"  multiValued="false"/>
     <field name="url"                       type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>          
 
    </fields>
