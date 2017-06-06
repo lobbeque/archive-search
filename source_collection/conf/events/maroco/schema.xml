@@ -29,7 +29,7 @@
 
     <field name="_indexed_at_tdt"           type="date"          indexed="false" stored="false" multiValued="false" default="NOW"  />
     <field name="_version_"                 type="long"          indexed="true"  stored="true"  multiValued="false"/>
-    <field name="id"                        type="string"        indexed="true"  stored="true"  multiValued="false" required="true" />
+    <field name="id"                        type="string"        indexed="true"  stored="true"  multiValued="false"/>
 
     <!-- event fields -->
 
