@@ -4,6 +4,8 @@
 
   <types>
 
+    <fieldType name="long"       class="solr.TrieLongField" precisionStep="0" omitNorms="true" positionIncrementGap="0"/>
+
     <fieldType name="string"     class="solr.StrField"      sortMissingLast="true" omitNorms="true"/>
   
     <fieldType name="date"       class="solr.TrieDateField" precisionStep="0" omitNorms="true" positionIncrementGap="0"/>
