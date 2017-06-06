@@ -119,7 +119,8 @@ install()
     fi
 
     echo "=== INSTALLING COLLECTION ==="
-    ./deploy_collection --mode=${MODE} --corpus=${CORPUS} --type=${TYPE} --nb_shards=${NB_SHARDS} --nb_replica=${NB_REPLICA}
+    ./deploy_collection --mode=${MODE} --corpus=${CORPUS} --type=${TYPE}  --nb_shards=${NB_SHARDS} --nb_replica=${NB_REPLICA}
+    ./deploy_collection --mode=${MODE} --corpus=${CORPUS} --type="events" --nb_shards=${NB_SHARDS} --nb_replica=${NB_REPLICA}
 
     echo "=== END ==="    
 }

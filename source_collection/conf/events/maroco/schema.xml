@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<schema name="ediasporas" version="1">
+
+  <types>
+
+    <fieldType name="string"     class="solr.StrField"      sortMissingLast="true" omitNorms="true"/>
+  
+    <fieldType name="date"       class="solr.TrieDateField" precisionStep="0" omitNorms="true" positionIncrementGap="0"/>
+
+    <fieldType name="text" class="solr.TextField">
+      <analyzer type="index">
+        <filter class="solr.LowerCaseFilterFactory"/>        
+        <tokenizer class="solr.StandardTokenizerFactory"/>
+        <!-- filter -->        
+        <filter class="solr.ElisionFilterFactory"/>
+        <filter class="solr.SnowballPorterFilterFactory" language="French" />        
+      </analyzer>
+    </fieldType> 
+
+  </types>
+
+
+  <fields>
+
+    <!-- meta fields -->
+
+    <field name="_indexed_at_tdt"           type="date"          indexed="false" stored="false" multiValued="false" default="NOW"  />
+    <field name="_version_"                 type="long"          indexed="true"  stored="true"  multiValued="false"/>
+    <field name="id"                        type="string"        indexed="true"  stored="true"  multiValued="false" required="true" />
+
+    <!-- event fields -->
+
+    <field name="date"                      type="date"          indexed="true"  stored="true"  docValues="true" multiValued="fasle"/>
+    <field name="title"                     type="text"          indexed="true"  stored="false" multiValued="true"/>
+    <field name="url"                       type="string"        indexed="true"  stored="true"  docValues="true" multiValued="false"/>          
+
+   </fields>
+
+    <uniqueKey>id</uniqueKey>   
+
+    <similarity class="solr.DefaultSimilarityFactory"/>
+
+</schema>

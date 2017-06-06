@@ -1,0 +1,10 @@
+<?xml version="1.0" ?>
+<enumsConfig>
+  <enum name="dateAccuracy">
+    <value>fragment</value>
+    <value>page</value>
+    <value>published</value>
+    <value>archive</value>
+  </enum>
+</enumsConfig>
+
