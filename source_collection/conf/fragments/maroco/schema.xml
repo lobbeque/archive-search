@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<schema name="ediasporas" version="1">
+
+  <types>
+
+    <fieldType name="string"     class="solr.StrField"      sortMissingLast="true" omitNorms="true"/>
+  
+    <fieldType name="date"       class="solr.TrieDateField" precisionStep="0" omitNorms="true" positionIncrementGap="0"/>
+
+    <fieldType name="int"        class="solr.TrieIntField" precisionStep="0" omitNorms="true" positionIncrementGap="0"/>
+   
+    <fieldType name="float"      class="solr.TrieFloatField" precisionStep="0" omitNorms="true" positionIncrementGap="0"/>
+   
+    <fieldType name="long"       class="solr.TrieLongField" precisionStep="0" omitNorms="true" positionIncrementGap="0"/>
+   
+    <fieldType name="double"     class="solr.TrieDoubleField" precisionStep="0" omitNorms="true" positionIncrementGap="0"/> 
+
+    <fieldType name="boolean"    class="solr.BoolField" sortMissingLast="true" omitNorms="true"/>  
+
+    <fieldType name="text_general" class="solr.TextField" sortMissingLast="true" omitNorms="true"/>  
+
+    <fieldType name="text" class="solr.TextField">
+      <analyzer type="index">
+        <filter class="solr.LowerCaseFilterFactory"/>        
+        <tokenizer class="solr.StandardTokenizerFactory"/>
+        <!-- filter -->        
+        <filter class="solr.ElisionFilterFactory"/>
+        <filter class="solr.SnowballPorterFilterFactory" language="French" />        
+      </analyzer>
+    </fieldType> 
+
+    <fieldtype name="shingle" class="solr.TextField">
+        <analyzer>
+            <filter class="solr.LowerCaseFilterFactory"/>            
+            <tokenizer class="solr.StandardTokenizerFactory"/>
+            <!-- filter -->        
+            <filter class="solr.ElisionFilterFactory"/>
+            <filter class="solr.SnowballPorterFilterFactory" language="French" />            
+            <filter class="solr.ShingleFilterFactory" minShingleSize="2" maxShingleSize="3"/>
+        </analyzer>
+    </fieldtype>  
+
+    <fieldType name="dateLevel" class="solr.EnumField" enumsConfig="enumsConfig.xml" enumName="dateLevel"/>
+
+  </types>
+
+
+  <fields>
+
+    <!-- meta fields -->
+    <field name="_indexed_at_tdt"            type="date"          indexed="false" stored="false" multiValued="false" default="NOW"   />
+    <field name="_version_"                  type="long"          indexed="true"  stored="true"  multiValued="false"/>
+    <field name="id"                         type="string"        indexed="true"  stored="true"  multiValued="false" required="true" />
+
+    <!-- archive fields -->
+    <field name="archive_active"             type="boolean"       indexed="true"  stored="true"  docValues="false" multiValued="false"/>
+    <field name="archive_corpus"             type="string"        indexed="true"  stored="true"  docValues="true"  multiValued="false"/>
+    <field name="archive_mime_type"          type="string"        indexed="true"  stored="true"  docValues="true"  multiValued="false"/>
+    <field name="archive_country"            type="string"        indexed="true"  stored="true"  docValues="true"  multiValued="false"/>
+    <field name="archive_lang"               type="string"        indexed="true"  stored="true"  docValues="true"  multiValued="true" />
+
+    <!-- crawler fields -->
+    <field name="crawl_id"                   type="string"        indexed="true"  stored="true"  docValues="true"  multiValued="true" />
+    <field name="crawl_date"                 type="date"          indexed="true"  stored="true"  docValues="true"  multiValued="true" />
+    <field name="crawl_date_first"           type="date"          indexed="true"  stored="true"  docValues="true"  multiValued="false"/>
+    <field name="crawl_date_last"            type="date"          indexed="true"  stored="true"  docValues="true"  multiValued="false"/>
+
+    <!-- page fields -->
+    <field name="page_downl_id"              type="string"        indexed="true"  stored="true"  docValues="true"  multiValued="false"/>    
+    <field name="page_downl_date"            type="date"          indexed="true"  stored="true"  docValues="true"  multiValued="true" />
+    <field name="page_downl_date_first"      type="date"          indexed="true"  stored="true"  docValues="true"  multiValued="false"/>
+    <field name="page_downl_date_last"       type="date"          indexed="true"  stored="true"  docValues="true"  multiValued="false"/>     
+    <field name="page_domain"                type="string"        indexed="true"  stored="true"  docValues="true"  multiValued="false"/>
+    <field name="page_url"                   type="string"        indexed="true"  stored="true"  docValues="true"  multiValued="false"/>
+    <field name="page_url_id"                type="string"        indexed="true"  stored="true"  docValues="true"  multiValued="false"/>
+    <field name="page_space"                 type="string"        indexed="true"  stored="true"  docValues="true"  multiValued="false"/>        
+    <field name="page_title"                 type="string"        indexed="true"  stored="true"  docValues="false" multiValued="false"/>
+    <field name="page_description"           type="text"          indexed="true"  stored="true"  docValues="false" multiValued="false"/>
+    <field name="page_published_date"        type="date"          indexed="true"  stored="true"  docValues="true"  multiValued="false"/>    
+    <field name="page_publisher"             type="string"        indexed="true"  stored="true"  docValues="true"  multiValued="false"/>
+
+    <!-- fragment fields -->
+    <field name="frag_type"                  type="string"        indexed="true"  stored="true"  docValues="true"  multiValued="true" />    
+    <field name="frag_author"                type="string"        indexed="true"  stored="true"  docValues="false" multiValued="true" default="unknown_author"/>
+    <field name="frag_date"                  type="date"          indexed="true"  stored="true"  docValues="true"  multiValued="true" />
+    <field name="frag_date_first"            type="date"          indexed="true"  stored="true"  docValues="true"  multiValued="false"/>
+    <field name="frag_date_level"            type="dateLevel"     indexed="true"  stored="true"  docValues="true"  multiValued="false"/>       
+    <field name="frag_href"                  type="string"        indexed="true"  stored="true"  docValues="false" multiValued="true" />
+    <field name="frag_href_id"               type="string"        indexed="true"  stored="true"  docValues="true"  multiValued="true" />
+    <field name="frag_ratio"                 type="int"           indexed="true"  stored="true"  docValues="true"  multiValued="true" />
+    <field name="frag_node"                  type="text"          indexed="false" stored="true"  docValues="false" multiValued="true" />     
+    <field name="frag_offset"                type="int"           indexed="true"  stored="true"  docValues="true"  multiValued="true" />
+    <field name="frag_text"                  type="text"          indexed="true"  stored="true"  docValues="false" multiValued="true" />
+    <field name="frag_text_id"               type="string"        indexed="true"  stored="true"  docValues="true"  multiValued="false"/> 
+    <field name="frag_text_shingle"          type="shingle"       indexed="true"  stored="false" docValues="false" multiValued="true" />       
+
+   </fields>
+
+    <uniqueKey>id</uniqueKey>
+
+    <!-- fields combinations -->
+
+    <copyField source="frag_text" dest="frag_text_shingle"/>      
+
+    <similarity class="solr.DefaultSimilarityFactory"/>
+
+</schema>

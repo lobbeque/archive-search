@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<config>
+
+  <luceneMatchVersion>${solr.version}</luceneMatchVersion>
+
+  <lib dir="${solr.root}/dist/" regex="solr-dataimporthandler-.*\.jar" />
+  <lib dir="${solr.root}/server/solr/lib/" regex="archive-search-tools_2.10-1.0.0.jar" />
+
+  <!-- ./data -->
+
+  <dataDir>${solr.data.dir:}</dataDir>
+
+  <!-- <dataDir>/infres/ir500/ic2+/qlobbe/data/solr/${solr.data.dir:}</dataDir> -->
+
+  <!-- The DirectoryFactory to use for indexes -->
+
+  <directoryFactory name="DirectoryFactory" class="${solr.directoryFactory:solr.MMapDirectoryFactory}"/>
+
+  <!-- The CodecFactory for defining the format of the inverted index -->
+
+  <codecFactory class="solr.SchemaCodecFactory"/>
+
+  <!-- Disable dynamic schema REST APIs and use schema.xml file -->
+  
+  <schemaFactory class="ClassicIndexSchemaFactory"/>
+
+  <indexConfig>
+
+    <!-- Maximum time to wait for a write lock (ms) for an IndexWriter -->
+    
+    <writeLockTimeout>1000</writeLockTimeout> 
+
+    <!-- Enabling compound file will use less files for the index -->
+    
+    <useCompoundFile>false</useCompoundFile>
+
+    <!-- ramBufferSizeMB sets the amount of RAM that may be used by Lucene indexing for buffering added documents -->
+
+    <ramBufferSizeMB>25</ramBufferSizeMB>
+
+    <!-- maxBufferedDocs sets a limit on the number of documents buffered before flushing -->
+        
+    <maxBufferedDocs>10000</maxBufferedDocs>
+
+    <!-- The merge factor controls how many segments will get merged at a time -->
+    
+    <mergeFactor>2</mergeFactor>
+
+    <!-- NativeFSLockFactory - uses OS native file locking -->
+    
+    <lockType>native</lockType>
+
+    <!-- Controls if IndexReaders will be re-opened, instead of closed and then opened, which is often less efficient. -->
+
+    <reopenReaders>true</reopenReaders>
+
+  </indexConfig>
+
+  <!-- CONFIG DATAIMPORT -->
+
+  <requestHandler name="/dataimport" class="solr.DataImportHandler">
+    <lst name="defaults">
+      <str name="config">data-config.xml</str>
+    </lst>
+  </requestHandler>
+
+  <!-- END CONFIG DATAIMPORT -->  
+
+  <jmx />
+
+  <!-- The default high-performance update handler -->
+
+  <updateHandler class="solr.DirectUpdateHandler2" />
+
+  <!-- customized user query processing instances of QParser  -->
+
+  <query>
+
+    <!-- Maximum number of clauses in a boolean query -->
+
+    <maxBooleanClauses>1024</maxBooleanClauses>
+
+    <filterCache
+      class="solr.LFUCache"
+      size="3072"
+      initialSize="3072"
+      autowarmCount="512"/>
+
+    <queryResultCache
+      class="solr.LRUCache"
+      size="512"
+      initialSize="512"
+      autowarmCount="0"/>
+    
+    <useFilterForSortedQuery>false</useFilterForSortedQuery>
+
+    <!-- Result Window Size -->
+
+    <queryResultWindowSize>100</queryResultWindowSize>
+
+    <!-- Use Cold Searcher -->
+
+    <useColdSearcher>false</useColdSearcher>
+
+    <!-- Max Warming Searchers -->
+
+    <maxWarmingSearchers>2</maxWarmingSearchers>
+
+    <!-- a newSearcher event is fired whenever a new searcher is being prepared
+      and there is a current searcher handling requests (aka registered).
+      It can be used to prime certain caches to prevent long request times for
+      certain requests. -->
+
+    <listener event="newSearcher" class="solr.QuerySenderListener">
+      <arr name="queries">
+        <lst><str name="q">toto</str>></lst>
+      </arr>
+    </listener>
+
+    <!-- a firstSearcher event is fired whenever a new searcher is being
+         prepared but there is no current registered searcher to handle
+         requests or to gain autowarming data from. -->
+
+    <listener event="firstSearcher" class="solr.QuerySenderListener">
+      <arr name="queries">
+        <lst><str name="q">toto</str></lst>
+      </arr>
+    </listener>
+
+  </query>
+
+  <!-- controls the way the Solr HTTP RequestDispatcher implementation responds to requests -->
+
+  <requestDispatcher handleSelect="true" >
+    <requestParsers enableRemoteStreaming="false" multipartUploadLimitInKB="2048" />
+    <httpCaching lastModifiedFrom="openTime" etagSeed="Solr">
+      <cacheControl>max-age=600, public</cacheControl>
+    </httpCaching>
+  </requestDispatcher>
+
+  <searchComponent name="timePicker" class="qlobbe.TimePickerComponent"/>  
+  <searchComponent name="siteLink" class="qlobbe.SiteLinkComponent"/>  
+  <searchComponent name="contextMap" class="qlobbe.ContextMapComponent"/>
+
+  <requestHandler name="/select" class="qlobbe.ArchiveSearchHandler">
+    <lst name="defaults">
+      <str name="q.alt">*:*</str>
+      <str name="df">title</str>
+      <str name="q.op">AND</str>
+      <str name="lowercaseOperators">false</str>
+      <float name="tie">1</float>
+      <str name="wt">json</str>
+      <str name="json.nl">map</str>   
+    </lst>
+  </requestHandler>  
+
+  <!-- default requestHandler -->
+
+  <requestHandler name="/standard" class="solr.StandardRequestHandler" default="true">
+    <lst name="defaults">
+      <str name="q.alt">*:*</str>
+      <str name="df">title</str>
+      <str name="q.op">AND</str>
+      <str name="lowercaseOperators">false</str>
+      <float name="tie">1</float>
+      <str name="wt">json</str>
+      <str name="json.nl">map</str>
+    </lst>   
+  </requestHandler>
+
+  <requestHandler name="/update" class="solr.UpdateRequestHandler" />
+
+  <requestHandler name="/admin/" class="org.apache.solr.handler.admin.AdminHandlers" />
+
+  <requestHandler name="/admin/luke" class="org.apache.solr.handler.admin.LukeRequestHandler" />
+
+  <!-- Legacy config for the admin interface -->
+
+  <admin>
+    <defaultQuery>desagrement</defaultQuery>
+  </admin>
+
+</config>

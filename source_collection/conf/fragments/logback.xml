@@ -1,0 +1,27 @@
+<configuration>
+
+  <appender name="SOLR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
+    </encoder>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>${solr.logs}/solr-%d.log</fileNamePattern>
+      <maxHistory>4</maxHistory>
+    </rollingPolicy>
+  </appender>
+
+  <appender name="SOLR_QUERIES" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <encoder>
+      <pattern>%d ${HOSTNAME} solr %msg%n</pattern>
+    </encoder>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <fileNamePattern>${solr.logs}/solr-queries-%d.log</fileNamePattern>
+      <maxHistory>4</maxHistory>
+    </rollingPolicy>
+  </appender>
+
+  <root level="WARN">
+    <appender-ref ref="SOLR" />
+  </root>
+
+</configuration>

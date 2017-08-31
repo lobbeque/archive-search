@@ -119,10 +119,13 @@ install()
     fi
 
     echo "=== INSTALLING COLLECTION EDIASPORAS ==="
-    ./deploy_collection --mode=${MODE} --corpus=${CORPUS} --type=${TYPE}  --nb_shards=${NB_SHARDS} --nb_replica=${NB_REPLICA}
+    ./deploy_collection --mode=${MODE} --corpus=${CORPUS} --type=${TYPE}     --nb_shards=${NB_SHARDS} --nb_replica=${NB_REPLICA}
 
     echo "=== INSTALLING COLLECTION EVENTS ==="
-    ./deploy_collection --mode=${MODE} --corpus=${CORPUS} --type="events" --nb_shards=${NB_SHARDS} --nb_replica=${NB_REPLICA}
+    ./deploy_collection --mode=${MODE} --corpus=${CORPUS} --type="events"    --nb_shards=${NB_SHARDS} --nb_replica=${NB_REPLICA}
+
+    echo "=== INSTALLING COLLECTION FRAGMENTS ==="
+    ./deploy_collection --mode=${MODE} --corpus=${CORPUS} --type="fragments" --nb_shards=${NB_SHARDS} --nb_replica=${NB_REPLICA}
 
     echo "=== END ==="    
 }
