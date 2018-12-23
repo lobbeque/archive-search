@@ -56,7 +56,7 @@ SOLR_CORES=${SOLR_SERVER}/solr
 REMOTE_SOLR_CORES=~/data/solr
 REMOTE_SOLR_CORES_BCK=~/data/solr_bck
 ```
-**Important :** pay attention to `ZOOKEEPER_CLIENT_PORT`, `ZOOKEEPER_SERVERS_LIST`, `SOLR_PORT` and Change Solr and Zookeeper versions if needed.   
+**Important :** pay attention to `ZOOKEEPER_CLIENT_PORT`, `ZOOKEEPER_SERVERS_LIST`, `SOLR_PORT` and change Solr or Zookeeper versions if needed.   
 
 Run the installation script: 
 
