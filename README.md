@@ -30,7 +30,7 @@ Run:
 ./scripts/install --corpus=mar --mode=cloud 
 ```
 
-## Options
+## Options
 
 ```
 --corpus (optional - default: mar) maroco/palestine1/palestine2/france/...
